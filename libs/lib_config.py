@@ -26,3 +26,12 @@ def get_config():
     with open("config.yml") as f:
         config = yaml.safe_load(f)
     return replace_config_vars(config)
+
+
+def get_logging_options(config):
+    path = config["Logging"]["path"]
+    level = config["Logging"]["level"]
+    log_exceptions = config["Logging"]["log_exceptions"]
+    display_stdout = config["Logging"]["display_stdout"]
+    mode = config["Logging"]["mode"]
+    return path, level, log_exceptions, display_stdout, mode
