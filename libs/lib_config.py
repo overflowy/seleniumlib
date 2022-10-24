@@ -4,7 +4,7 @@ from pathlib import Path
 import yaml
 
 VARS_TO_REPLACE = {
-    "{{SCRIPT_DIR}}": Path(sys.argv[0]).parent.parent,
+    "{{SCRIPT_DIR}}": Path(sys.argv[0]).parent,
 }
 
 
@@ -16,7 +16,7 @@ def replace_config_vars(config):
                     continue
                 if isinstance(replacement, Path):
                     value = value.replace(var, str(replacement))
-                    config[section][key] = str(Path(value).resolve())
+                    config[section][key] = str(Path(value))
                 else:
                     config[section][key] = value.replace(var, replacement)
     return config
