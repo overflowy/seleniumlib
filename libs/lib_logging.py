@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 LOGGING_LEVEL = {
@@ -11,9 +12,20 @@ LOGGING_LEVEL = {
     "fatal": logging.CRITICAL,
 }
 
+LOGGING_MODES = {
+    "append": "a",
+    "write": "w",
+}
+
 
 def setup_logging(path, level, log_exceptions, display_stdout, mode):
+    """Setup logging to file and/or stdout."""
+
+    # Ensure directory structure.
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
     level = LOGGING_LEVEL.get(level.lower(), logging.INFO)
+    mode = LOGGING_MODES.get(mode.lower())
     handlers = [logging.FileHandler(path, mode=mode)]
 
     if display_stdout:
