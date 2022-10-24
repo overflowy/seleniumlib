@@ -3,15 +3,16 @@ from pathlib import Path
 
 import yaml
 
-VARS_TO_REPLACE = {
+VARS = {
     "{{SCRIPT_DIR}}": Path(sys.argv[0]).parent,
 }
 
 
 def replace_config_vars(config):
+    """Replace config vars with values from VARS."""
     for section in config.keys():
         for key, value in config[section].items():
-            for var, replacement in VARS_TO_REPLACE.items():
+            for var, replacement in VARS.items():
                 if not isinstance(value, str) or var not in value:
                     continue
                 if isinstance(replacement, Path):
@@ -29,6 +30,7 @@ def get_config():
 
 
 def get_logging_options(config):
+    """Return logging options from config."""
     path = config["Logging"]["path"]
     level = config["Logging"]["level"]
     log_exceptions = config["Logging"]["log_exceptions"]
