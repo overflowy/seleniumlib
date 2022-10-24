@@ -1,7 +1,7 @@
 Browser:
   chromium_executable_path: null
-  chrome_profile_path: "{{SCRIPT_DIR}}/temp"
-  chrome_downloads_path: "{{SCRIPT_DIR}}/temp/Downloads"
+  chromium_profile_path: "{{SCRIPT_DIR}}/temp"
+  downloads_path: "{{SCRIPT_DIR}}/temp/Downloads"
   session_path: "{{SCRIPT_DIR}}/temp/session.pickle"
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
   global_timeout: 5  # Seconds
