@@ -1,0 +1,20 @@
+Browser:
+  chromium_executable_path: null
+  chrome_profile_path: "{{SCRIPT_DIR}}/temp"
+  chrome_downloads_path: "{{SCRIPT_DIR}}/temp/Downloads"
+  session_path: "{{SCRIPT_DIR}}/temp/session.pickle"
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+  global_timeout: 5  # Seconds
+  headless: true
+  sandbox: false
+  start_maximized: false
+  quit_when_finished: false
+  disable_selenium_logging: true  # Prevent selenium from polluting the terminal/log
+  debug_on_exception: true  # Start interactive debugger after encountering an exception
+
+Logging:
+  path: "{{SCRIPT_DIR}}/temp/selenium.log"
+  level: INFO  # DEBUG / INFO / WARNING / ERROR / CRITICAL
+  log_exceptions: true
+  display_stdout: true
+  mode: APPEND  # APPEND to append events to an existing log / WRITE to create a new file every run
