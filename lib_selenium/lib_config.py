@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -5,6 +6,7 @@ import yaml
 
 VARS = {
     "{{SCRIPT_DIR}}": Path(sys.argv[0]).parent,
+    "{{USERNAME}}": os.environ.get("USERNAME"),
 }
 
 
