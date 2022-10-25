@@ -125,7 +125,7 @@ def page_contains_text(text):
 
 
 def click(element, find_by=By.ID, alias=None):
-    """Wait for an element to be clickable and click it."""
+    """Wait for an element to be available and click it."""
     try:
         WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).click()
         return
