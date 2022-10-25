@@ -1,6 +1,8 @@
 import functools
 import logging
+import os
 import pickle
+import sys
 import time
 
 from .browser import get_browser
@@ -26,6 +28,18 @@ def timer(func):
     return wrapped
 
 
+def kill_orphaned_processes():
+    """Kill orphaned chromedriver processes.
+    This is a workaround for killing orphaned processes that are not killed when the browser is manually closed.
+    """
+    if sys.platform == "win32":
+        os.system("taskkill /im chromedriver.exe /f")
+    else:
+        os.system("pkill -f chromedriver")
+
+
+if not QUIT_WHEN_DONE:
+    kill_orphaned_processes()
 browser = get_browser()
 
 
@@ -41,4 +55,10 @@ def restore_session():
         logger.error("Session file not found.")
 
 
-__all__ = ["timer", "browser", "QUIT_WHEN_DONE"]
+__all__ = [
+    "QUIT_WHEN_DONE",
+    "browser",
+    "restore_session",
+    "save_session",
+    "timer",
+]
