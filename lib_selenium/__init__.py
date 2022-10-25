@@ -71,9 +71,19 @@ def refresh():
     browser.refresh()
 
 
+def back():
+    browser.back()
+
+
+def forward():
+    browser.forward()
+
+
 __all__ = [
     "QUIT_WHEN_DONE",
+    "back",
     "browser",
+    "forward",
     "go",
     "refresh",
     "restore_session",
