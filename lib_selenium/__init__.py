@@ -112,6 +112,16 @@ def element_exists(element, find_by=By.ID):
     return True
 
 
+def html():
+    """Return the HTML of the current page."""
+    return browser.page_source
+
+
+def page_contains_text(text):
+    """Check if page contains text."""
+    return text in html()
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
@@ -120,6 +130,8 @@ __all__ = [
     "element_exists",
     "forward",
     "go",
+    "html",
+    "page_contains_text",
     "refresh",
     "restore_session",
     "save_screenshot",
