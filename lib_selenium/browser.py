@@ -13,8 +13,8 @@ from .lib_config import get_config
 CONFIG = get_config()
 logger = logging.getLogger(__name__)
 
-TIMEOUT = CONFIG["Browser"]["global_timeout"]
-DEBUG_ON_EXCEPTION = CONFIG["Browser"]["debug_on_exception"]
+TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
+DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 
 
 def get_browser():
@@ -26,7 +26,7 @@ def get_browser():
 def parse_browser_options(chrome_options, browser_config):
     """Parse browser options from config file."""
 
-    chrome_options.binary_location = browser_config["chromium_executable_path"]
+    chrome_options.binary_location = browser_config.get("chromium_executable_path")
     prefs = {
         "safebrowsing.enabled": "false",
         "profile.exit_type": "Normal",
@@ -38,15 +38,15 @@ def parse_browser_options(chrome_options, browser_config):
                 chrome_options.add_argument("--headless")
             case "sandbox" if not browser_config.get("sandbox"):
                 chrome_options.add_argument("--no-sandbox")
-            case "start_maximized" if browser_config.get(option):
+            case "start_maximized" if browser_config.get("start_maximized"):
                 chrome_options.add_argument("--start-maximized")
-            case "user_agent":
-                chrome_options.add_argument(f"user-agent={browser_config[option]}")
-            case "chromium_profile_path":
-                chrome_options.add_argument(f"user-data-dir={browser_config[option]}")
+            case "user_agent" if user_agent := browser_config.get("user_agent"):
+                chrome_options.add_argument(f"user-agent={user_agent}")
+            case "chromium_profile_path" if chromium_profile_path := browser_config.get("chromium_profile_path"):
+                chrome_options.add_argument(f"user-data-dir={chromium_profile_path}")
             case "disable_selenium_logging" if browser_config.get(option):
                 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-            case "downloads_path":
-                prefs["download.default_directory"] = browser_config[option]
+            case "downloads_path" if downloads_path := browser_config.get("downloads_path"):
+                prefs["download.default_directory"] = downloads_path
     chrome_options.add_experimental_option("prefs", prefs)
     return chrome_options
