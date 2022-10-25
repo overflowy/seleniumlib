@@ -43,6 +43,7 @@ def setup_logging(path, level, log_exceptions, display_stdout, mode):
     )
 
     def handle_exception(exc_type, exc_value, exc_traceback):
+        """Log uncaught exceptions."""
         logger = logging.getLogger(__name__)
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
