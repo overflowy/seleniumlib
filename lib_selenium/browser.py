@@ -1,3 +1,5 @@
+import os
+
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -33,9 +35,12 @@ def parse_browser_options(chrome_options, browser_config):
                 chrome_options.add_argument(f"user-agent={user_agent}")
             case "chromium_profile_path" if chromium_profile_path := browser_config.get("chromium_profile_path"):
                 chrome_options.add_argument(f"user-data-dir={chromium_profile_path}")
-            case "disable_selenium_logging" if browser_config.get(option):
-                chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
             case "downloads_path" if downloads_path := browser_config.get("downloads_path"):
                 prefs["download.default_directory"] = downloads_path
+            case "disable_selenium_logging" if browser_config.get("disable_selenium_logging"):
+                chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+            case "disable_wdm_logging" if browser_config.get("disable_wdm_logging"):
+                os.environ["WDM_LOG"] = "0"
+
     chrome_options.add_experimental_option("prefs", prefs)
     return chrome_options
