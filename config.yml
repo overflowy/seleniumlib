@@ -11,6 +11,8 @@ Browser:
   start_maximized: false
   quit_when_done: false
   debug_on_exception: true  # Start interactive debugger after encountering an exception.
+  disable_selenium_logging: true  # Prevent selenium from polluting the terminal/log.
+  disable_wdm_logging: true  # Prevent webdriver-manager from polluting the terminal/log.
 
 Logging:
   log_path: "{{SCRIPT_DIR}}/temp/selenium.log"
@@ -18,5 +20,3 @@ Logging:
   log_exceptions: true
   display_stdout: true
   mode: APPEND  # APPEND to append events to an existing log / WRITE to create a new file every run.
-  disable_selenium_logging: true  # Prevent selenium from polluting the terminal/log.
-  disable_wdm_logging: true  # Prevent webdriver-manager from polluting the terminal/log.
