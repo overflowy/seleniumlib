@@ -44,13 +44,21 @@ browser = get_browser()
 
 
 def save_session():
-    pickle.dump(browser.get_cookies(), open(CONFIG["Browser"]["session_path"], "wb"))
+    """Save the current session to a file. This will also save the current URL."""
+    cookies = browser.get_cookies()
+    cookies.insert(0, {"url": browser.current_url})
+    pickle.dump(cookies, open(CONFIG["Browser"]["session_path"], "wb"))
 
 
 def restore_session():
+    """Restore the session from a file. This will also restore the current URL."""
     try:
-        for cookie in pickle.load(open(CONFIG["Browser"]["session_path"], "rb")):
+        cookies = pickle.load(open(CONFIG["Browser"]["session_path"], "rb"))
+        # Cannot set cookies for a domain that is not the current domain.
+        browser.get(cookies.pop(0)["url"])
+        for cookie in cookies:
             browser.add_cookie(cookie)
+        browser.refresh()
     except FileNotFoundError:
         logger.error("Session file not found.")
 
