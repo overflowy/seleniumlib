@@ -17,9 +17,10 @@ def extract_text_between_double_curly_braces(text):
         return None
 
 
-def normalize_path(path):
+def normalize_path(path, as_str=True):
     """Normalize path."""
-    return str(Path(path).expanduser().resolve())
+    n_path = Path(path).expanduser().resolve()
+    return str(n_path) if as_str else n_path
 
 
 def swap_env_vars(config):
