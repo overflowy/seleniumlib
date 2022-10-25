@@ -1,15 +1,9 @@
-import logging
-
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from .lib_config import get_config
 
 CONFIG = get_config()
-logger = logging.getLogger(__name__)
-
-TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
-DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 
 
 def get_browser():

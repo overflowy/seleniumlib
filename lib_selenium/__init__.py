@@ -18,7 +18,9 @@ from .lib_config import get_config, get_logging_options, normalize_path
 from .lib_logging import setup_logging
 
 CONFIG = get_config()
+DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
+TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
 setup_logging(*get_logging_options(CONFIG))
 logger = logging.getLogger(__name__)
 
