@@ -6,6 +6,13 @@ import sys
 import time
 from pathlib import Path
 
+from selenium.common.exceptions import *
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from .browser import get_browser
 from .lib_config import get_config, get_logging_options, normalize_path
 from .lib_logging import setup_logging
@@ -96,10 +103,21 @@ def save_screenshot():
     logger.info(f"Screenshot saved to {filename}")
 
 
+def element_exists(element, find_by=By.ID):
+    """Check if element exists."""
+    try:
+        browser.find_element(find_by, element)
+    except NoSuchElementException:
+        return False
+    return True
+
+
 __all__ = [
+    "By",
     "QUIT_WHEN_DONE",
     "back",
     "browser",
+    "element_exists",
     "forward",
     "go",
     "refresh",
