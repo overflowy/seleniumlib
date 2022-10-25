@@ -124,11 +124,24 @@ def page_contains_text(text):
     return text in html()
 
 
+def click(element, find_by=By.ID, alias=None):
+    """Wait for an element to be clickable and click it."""
+    try:
+        WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).click()
+        return
+    except Exception:
+        if alias:
+            logger.warning(f"Could not click '{alias}'")
+        else:
+            logger.warning(f"Could not click '{element}'")
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "back",
     "browser",
+    "click",
     "element_exists",
     "forward",
     "go",
