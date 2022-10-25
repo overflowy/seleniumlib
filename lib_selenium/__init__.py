@@ -67,10 +67,15 @@ def go(url):
     browser.get(url)
 
 
+def refresh():
+    browser.refresh()
+
+
 __all__ = [
     "QUIT_WHEN_DONE",
     "browser",
     "go",
+    "refresh",
     "restore_session",
     "save_session",
     "timer",
