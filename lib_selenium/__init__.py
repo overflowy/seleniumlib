@@ -4,9 +4,10 @@ import os
 import pickle
 import sys
 import time
+from pathlib import Path
 
 from .browser import get_browser
-from .lib_config import get_config, get_logging_options
+from .lib_config import get_config, get_logging_options, normalize_path
 from .lib_logging import setup_logging
 
 CONFIG = get_config()
@@ -30,7 +31,8 @@ def timer(func):
 
 def kill_orphaned_processes():
     """Kill orphaned chromedriver processes.
-    This is a workaround for killing orphaned processes that are not killed when the browser is manually closed.
+    This is a workaround for killing orphaned processes
+    that are not killed when the browser is manually closed.
     """
     if sys.platform == "win32":
         os.system("taskkill /im chromedriver.exe /f")
@@ -64,19 +66,34 @@ def restore_session():
 
 
 def go(url):
+    """Go to a URL."""
     browser.get(url)
 
 
 def refresh():
+    """Refresh the current page."""
     browser.refresh()
 
 
 def back():
+    """Go back to the previous page."""
     browser.back()
 
 
 def forward():
+    """Go forward to the next page."""
     browser.forward()
+
+
+def save_screenshot():
+    """Save a screenshot of the current page."""
+    if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
+        raise ValueError("Screenshots path not set in config.")
+    if not Path(screenshots_path).exists():
+        Path(screenshots_path).mkdir(parents=True)
+    filename = str(Path(screenshots_path) / Path(f"screenshot_{time.time()}.png"))
+    browser.save_screenshot(filename)
+    logger.info(f"Screenshot saved to {filename}")
 
 
 __all__ = [
@@ -87,6 +104,7 @@ __all__ = [
     "go",
     "refresh",
     "restore_session",
+    "save_screenshot",
     "save_session",
     "timer",
 ]
