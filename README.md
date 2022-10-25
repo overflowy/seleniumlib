@@ -10,5 +10,6 @@ Minimal template for web scraping projects using Python and Selenium
   - Or `pip install selenium webdriver-manager pyyaml`
 - Download Chromium (for Windows, portable builds can be found [here](https://chromium.woolyss.com/))
 - Edit `config.yaml` and set the path to the Chromium executable (`Browser.chromium_executable_path`)
-- Define execution steps in `playbook.py`
+- Define execution steps in `playbook.py` (to keep things clean)
+- Import steps from `playbook.py` into `main.py` and call them in the desired order
 - Run `python main.py`
