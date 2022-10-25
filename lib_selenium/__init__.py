@@ -55,9 +55,14 @@ def restore_session():
         logger.error("Session file not found.")
 
 
+def go(url):
+    browser.get(url)
+
+
 __all__ = [
     "QUIT_WHEN_DONE",
     "browser",
+    "go",
     "restore_session",
     "save_session",
     "timer",
