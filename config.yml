@@ -5,10 +5,10 @@ Browser:
   session_path: "{{SCRIPT_DIR}}/temp/session.pickle"
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
   global_timeout: 5  # Seconds
-  headless: true
-  sandbox: false
+  headless: false
+  sandbox: true
   start_maximized: false
-  quit_when_finished: false
+  quit_when_done: false
   disable_selenium_logging: true  # Prevent selenium from polluting the terminal/log
   debug_on_exception: true  # Start interactive debugger after encountering an exception
 
