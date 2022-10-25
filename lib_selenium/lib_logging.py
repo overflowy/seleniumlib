@@ -18,18 +18,18 @@ LOGGING_MODES = {
 }
 
 
-def setup_logging(path, level, log_exceptions, display_stdout, mode):
+def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
     """Setup logging to file and/or stdout."""
 
-    if not path:
+    if not log_path:
         return  # No logging.
 
     # Ensure directory structure.
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
     level = LOGGING_LEVEL.get(level.lower(), logging.INFO)
     mode = LOGGING_MODES.get(mode.lower())
-    handlers = [logging.FileHandler(path, mode=mode)]
+    handlers = [logging.FileHandler(log_path, mode=mode)]
 
     if display_stdout:
         stdout_handler = logging.StreamHandler(sys.stdout)

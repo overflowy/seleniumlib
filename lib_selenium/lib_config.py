@@ -45,9 +45,9 @@ def get_config():
 
 def get_logging_options(config):
     """Return logging options from config."""
-    path = config["Logging"].get("path")
+    log_path = config["Logging"].get("log_path")
     level = config["Logging"].get("level", "info")
     log_exceptions = config["Logging"].get("log_exceptions", True)
     display_stdout = config["Logging"].get("display_stdout", True)
     mode = config["Logging"].get("mode", "a")
-    return path, level, log_exceptions, display_stdout, mode
+    return log_path, level, log_exceptions, display_stdout, mode
