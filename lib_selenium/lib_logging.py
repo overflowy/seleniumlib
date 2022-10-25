@@ -21,6 +21,9 @@ LOGGING_MODES = {
 def setup_logging(path, level, log_exceptions, display_stdout, mode):
     """Setup logging to file and/or stdout."""
 
+    if not path:
+        return  # No logging.
+
     # Ensure directory structure.
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
