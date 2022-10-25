@@ -13,7 +13,7 @@ def extract_text_between_double_curly_braces(text):
     """Extract text between double curly braces."""
     try:
         return re.findall(EXPR, text)[0]
-    except (IndexError, TypeError):
+    except IndexError:
         return None
 
 
