@@ -309,6 +309,32 @@ def double_click_by_attribute(attribute, value, alias=None):
     _double_click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
 
 
+def _clear_text(element):
+    """Clear text from an element."""
+    element.send_keys(Keys.CONTROL + "a")
+    element.send_keys(Keys.DELETE)
+
+
+def write(element, text, find_by=By.ID, alias=None, clear_first=True):
+    """Wait for an element to be available and write into it."""
+    try:
+        el = WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).send_keys(text)
+        if clear_first:
+            _clear_text(el)
+        if alias:
+            logger.info(f"Wrote into by {find_by}: '{alias}'")
+        else:
+            logger.info(f"Wrote into by {find_by}: '{element}'")
+        return
+    except Exception:
+        if alias:
+            logger.error(f"Could not write into by {find_by}: '{alias}'")
+        else:
+            logger.error(f"Could not write into by {find_by}: '{element}'")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
@@ -348,4 +374,5 @@ __all__ = [
     "script",
     "timer",
     "title",
+    "write",
 ]
