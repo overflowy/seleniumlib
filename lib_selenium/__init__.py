@@ -200,6 +200,11 @@ def _click(element, find_by=By.ID, alias=None):
             breakpoint()
 
 
+def click(element, find_by=By.ID, alias=None):
+    """Click an element."""
+    _click(element, find_by, alias)
+
+
 def click_by_id(element, alias=None):
     """Click an element by ID."""
     _click(element, find_by=By.ID, alias=alias)
@@ -262,6 +267,11 @@ def _double_click(element, find_by=By.ID, alias=None):
             logger.error(f"Could not double click by {find_by}: '{element}'")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
+
+
+def double_click(element, find_by=By.ID, alias=None):
+    """Double click an element."""
+    _double_click(element, find_by, alias)
 
 
 def double_click_by_id(element, alias=None):
@@ -341,6 +351,7 @@ __all__ = [
     "accept_alert",
     "back",
     "browser",
+    "click",
     "click_by_attribute",
     "click_by_class_name",
     "click_by_css_selector",
@@ -352,6 +363,7 @@ __all__ = [
     "click_by_xpath",
     "current_url",
     "dismiss_alert",
+    "double_click",
     "double_click_by_attribute",
     "double_click_by_class_name",
     "double_click_by_css_selector",
