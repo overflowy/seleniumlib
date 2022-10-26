@@ -22,6 +22,10 @@ CONFIG = get_config()
 DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
 TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
+
+KILL_CHROMIUM_BEFORE_START = CONFIG["Browser"].get("kill_chromium_before_start", False)
+KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
+
 setup_logging(*get_logging_options(CONFIG))
 logger = logging.getLogger(__name__)
 
@@ -50,8 +54,19 @@ def kill_orphaned_processes():
         os.system("pkill -f chromedriver")
 
 
-if not QUIT_WHEN_DONE:
+def kill_chromium():
+    """Kill chromium process."""
+    if sys.platform == "win32":
+        os.system("taskkill /im chrome.exe /f")
+    else:
+        os.system("pkill -f chrome")
+
+
+if not QUIT_WHEN_DONE or KILL_WD_BEFORE_START:
     kill_orphaned_processes()
+if KILL_CHROMIUM_BEFORE_START:
+    kill_chromium()
+
 browser = get_browser()
 
 

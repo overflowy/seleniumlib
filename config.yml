@@ -13,6 +13,8 @@ Browser:
   debug_on_exception: true  # Start interactive debugger after encountering an exception.
   disable_selenium_logging: true  # Prevent selenium from polluting the terminal/log.
   disable_wdm_logging: true  # Prevent webdriver-manager from polluting the terminal/log.
+  kill_chromium_before_start: false  # Kill any existing chromium processes before starting a new one.
+  kill_wd_before_start: false  # Kill any existing webdriver processes before starting a new one.
 
 Logging:
   log_path: "{{SCRIPT_DIR}}/temp/selenium.log"
