@@ -151,6 +151,18 @@ def click_by_link_text(element, alias=None):
     _click(element, find_by=By.LINK_TEXT, alias=alias)
 
 
+def click_by_partial_link_text(element, alias=None):
+    _click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
+
+
+def click_by_name(element, alias=None):
+    _click(element, find_by=By.NAME, alias=alias)
+
+
+def click_by_tag_name(element, alias=None):
+    _click(element, find_by=By.TAG_NAME, alias=alias)
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
@@ -158,6 +170,9 @@ __all__ = [
     "browser",
     "click_by_id",
     "click_by_link_text",
+    "click_by_name",
+    "click_by_partial_link_text",
+    "click_by_tag_name",
     "click_by_xpath",
     "element_exists",
     "forward",
