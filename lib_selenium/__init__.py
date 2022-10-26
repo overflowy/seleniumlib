@@ -143,12 +143,22 @@ def click_by_id(element, alias=None):
     _click(element, find_by=By.ID, alias=alias)
 
 
+def click_by_xpath(element, alias=None):
+    _click(element, find_by=By.XPATH, alias=alias)
+
+
+def click_by_link_text(element, alias=None):
+    _click(element, find_by=By.LINK_TEXT, alias=alias)
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "back",
     "browser",
     "click_by_id",
+    "click_by_link_text",
+    "click_by_xpath",
     "element_exists",
     "forward",
     "go",
