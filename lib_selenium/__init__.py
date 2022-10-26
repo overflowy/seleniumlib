@@ -144,34 +144,42 @@ def click_by_id(element, alias=None):
 
 
 def click_by_xpath(element, alias=None):
+    """Click an element by XPath."""
     _click(element, find_by=By.XPATH, alias=alias)
 
 
 def click_by_link_text(element, alias=None):
+    """Click an element by link text."""
     _click(element, find_by=By.LINK_TEXT, alias=alias)
 
 
 def click_by_partial_link_text(element, alias=None):
+    """Click an element by partial link text."""
     _click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
 
 
 def click_by_name(element, alias=None):
+    """Click an element by name."""
     _click(element, find_by=By.NAME, alias=alias)
 
 
 def click_by_tag_name(element, alias=None):
+    """Click an element by tag name."""
     _click(element, find_by=By.TAG_NAME, alias=alias)
 
 
 def click_by_class_name(element, alias=None):
+    """Click an element by class name."""
     _click(element, find_by=By.CLASS_NAME, alias=alias)
 
 
 def click_by_css_selector(element, alias=None):
+    """Click an element by CSS selector."""
     _click(element, find_by=By.CSS_SELECTOR, alias=alias)
 
 
 def click_by_attribute(attribute, value, alias=None):
+    """Click an element by an attribute value."""
     _click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
 
 
