@@ -163,11 +163,21 @@ def click_by_tag_name(element, alias=None):
     _click(element, find_by=By.TAG_NAME, alias=alias)
 
 
+def click_by_class_name(element, alias=None):
+    _click(element, find_by=By.CLASS_NAME, alias=alias)
+
+
+def click_by_css_selector(element, alias=None):
+    _click(element, find_by=By.CSS_SELECTOR, alias=alias)
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "back",
     "browser",
+    "click_by_class_name",
+    "click_by_css_selector",
     "click_by_id",
     "click_by_link_text",
     "click_by_name",
