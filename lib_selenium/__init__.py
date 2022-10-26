@@ -128,12 +128,16 @@ def _click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
     try:
         WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).click()
+        if alias:
+            logger.info(f"Clicked by {find_by}: '{alias}'")
+        else:
+            logger.info(f"Clicked by {find_by}: '{element}'")
         return
     except Exception:
         if alias:
-            logger.warning(f"Could not click '{alias}'")
+            logger.error(f"Could not click by {find_by}: '{alias}'")
         else:
-            logger.warning(f"Could not click '{element}'")
+            logger.error(f"Could not click by {find_by}: '{element}'")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
