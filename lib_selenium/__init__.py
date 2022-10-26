@@ -8,6 +8,7 @@ from pathlib import Path
 
 from selenium.common.exceptions import *
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -192,6 +193,70 @@ def click_by_attribute(attribute, value, alias=None):
     _click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
 
 
+def _double_click(element, find_by=By.ID, alias=None):
+    """Wait for an element to be available and click it."""
+    try:
+        el = WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element)))
+        ActionChains(browser).double_click(el).perform()
+        if alias:
+            logger.info(f"Double clicked by {find_by}: '{alias}'")
+        else:
+            logger.info(f"Double clicked by {find_by}: '{element}'")
+        return
+    except Exception:
+        if alias:
+            logger.error(f"Could not double click by {find_by}: '{alias}'")
+        else:
+            logger.error(f"Could not double click by {find_by}: '{element}'")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
+def double_click_by_id(element, alias=None):
+    """Double click an element by ID."""
+    _double_click(element, find_by=By.ID, alias=alias)
+
+
+def double_click_by_xpath(element, alias=None):
+    """Double click an element by XPath."""
+    _double_click(element, find_by=By.XPATH, alias=alias)
+
+
+def double_click_by_link_text(element, alias=None):
+    """Double click an element by link text."""
+    _double_click(element, find_by=By.LINK_TEXT, alias=alias)
+
+
+def double_click_by_partial_link_text(element, alias=None):
+    """Double click an element by partial link text."""
+    _double_click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
+
+
+def double_click_by_name(element, alias=None):
+    """Double click an element by name."""
+    _double_click(element, find_by=By.NAME, alias=alias)
+
+
+def double_click_by_tag_name(element, alias=None):
+    """Double click an element by tag name."""
+    _double_click(element, find_by=By.TAG_NAME, alias=alias)
+
+
+def double_click_by_class_name(element, alias=None):
+    """Double click an element by class name."""
+    _double_click(element, find_by=By.CLASS_NAME, alias=alias)
+
+
+def double_click_by_css_selector(element, alias=None):
+    """Double click an element by CSS selector."""
+    _double_click(element, find_by=By.CSS_SELECTOR, alias=alias)
+
+
+def double_click_by_attribute(attribute, value, alias=None):
+    """Double click an element by an attribute value."""
+    _double_click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
@@ -206,6 +271,15 @@ __all__ = [
     "click_by_partial_link_text",
     "click_by_tag_name",
     "click_by_xpath",
+    "double_click_by_attribute",
+    "double_click_by_class_name",
+    "double_click_by_css_selector",
+    "double_click_by_id",
+    "double_click_by_link_text",
+    "double_click_by_name",
+    "double_click_by_partial_link_text",
+    "double_click_by_tag_name",
+    "double_click_by_xpath",
     "element_exists",
     "forward",
     "go",
