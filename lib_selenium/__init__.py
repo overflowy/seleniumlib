@@ -124,6 +124,11 @@ def page_contains_text(text):
     return text in html()
 
 
+def script(script):
+    """Execute a script."""
+    browser.execute_script(script)
+
+
 def _click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
     try:
@@ -210,5 +215,6 @@ __all__ = [
     "restore_session",
     "save_screenshot",
     "save_session",
+    "script",
     "timer",
 ]
