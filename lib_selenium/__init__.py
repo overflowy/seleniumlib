@@ -116,13 +116,23 @@ def save_screenshot():
     logger.info(f"Screenshot saved to {filename}")
 
 
-def element_exists(element, find_by=By.ID):
+def is_element_present(element, find_by=By.ID):
     """Check if element exists."""
     try:
-        browser.find_element(find_by, element)
+        WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, element)))
     except NoSuchElementException:
         return False
     return True
+
+
+def get_element_text(element, find_by=By.ID):
+    """Get the text of an element."""
+    try:
+        return WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, element))).text
+    except NoSuchElementException:
+        logger.error(f"Element '{element}' not found")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
 
 
 def html():
@@ -325,10 +335,11 @@ __all__ = [
     "double_click_by_partial_link_text",
     "double_click_by_tag_name",
     "double_click_by_xpath",
-    "element_exists",
     "forward",
+    "get_element_text",
     "go",
     "html",
+    "is_element_present",
     "page_contains_text",
     "refresh",
     "restore_session",
