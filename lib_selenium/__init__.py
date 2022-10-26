@@ -171,11 +171,16 @@ def click_by_css_selector(element, alias=None):
     _click(element, find_by=By.CSS_SELECTOR, alias=alias)
 
 
+def click_by_attribute(attribute, value, alias=None):
+    _click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
+
+
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "back",
     "browser",
+    "click_by_attribute",
     "click_by_class_name",
     "click_by_css_selector",
     "click_by_id",
