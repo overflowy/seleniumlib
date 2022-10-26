@@ -130,6 +130,38 @@ def script(script):
     browser.execute_script(script)
 
 
+def accept_alert():
+    """Accept an alert."""
+    text = None
+    try:
+        alert = WebDriverWait(browser, TIMEOUT).until(EC.alert_is_present())
+        text = alert.text
+        alert.accept()
+        logger.info(f"Alert accepted: '{text}'")
+    except Exception:
+        if text:
+            logger.error(f"Could not accept alert: '{text}'")
+        logger.error("Could not accept alert")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
+def dismiss_alert():
+    """Dismiss an alert."""
+    text = None
+    try:
+        alert = WebDriverWait(browser, TIMEOUT).until(EC.alert_is_present())
+        text = alert.text
+        alert.dismiss()
+        logger.info(f"Alert dismissed: '{text}'")
+    except Exception:
+        if text:
+            logger.error(f"Could not dismiss alert: '{text}'")
+        logger.error("Could not dismiss alert")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
 def _click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
     try:
@@ -260,6 +292,8 @@ def double_click_by_attribute(attribute, value, alias=None):
 __all__ = [
     "By",
     "QUIT_WHEN_DONE",
+    "accept_alert",
+    "dismiss_alert",
     "back",
     "browser",
     "click_by_attribute",
