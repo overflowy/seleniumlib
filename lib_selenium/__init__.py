@@ -75,6 +75,16 @@ def restore_session():
         logger.error("Session file not found.")
 
 
+def current_url():
+    """Return the current URL."""
+    return browser.current_url
+
+
+def title():
+    """Return the title of the current page."""
+    return browser.title
+
+
 def go(url):
     """Go to a URL."""
     browser.get(url)
@@ -293,7 +303,6 @@ __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "accept_alert",
-    "dismiss_alert",
     "back",
     "browser",
     "click_by_attribute",
@@ -305,6 +314,8 @@ __all__ = [
     "click_by_partial_link_text",
     "click_by_tag_name",
     "click_by_xpath",
+    "current_url",
+    "dismiss_alert",
     "double_click_by_attribute",
     "double_click_by_class_name",
     "double_click_by_css_selector",
@@ -325,4 +336,5 @@ __all__ = [
     "save_session",
     "script",
     "timer",
+    "title",
 ]
