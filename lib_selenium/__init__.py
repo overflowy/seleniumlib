@@ -30,6 +30,8 @@ KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
 setup_logging(*get_logging_options(CONFIG))
 logger = logging.getLogger(__name__)
 
+By.ATTRIBUTE_VALUE = "attribute"  # Extend 'By' class to allow searching by attribute value.
+
 
 def timer(func):
     @functools.wraps(func)
@@ -69,8 +71,6 @@ if KILL_CHROMIUM_BEFORE_START:
     kill_chromium()
 
 browser = get_browser()
-
-
 
 
 def current_url():
@@ -141,6 +141,8 @@ def restore_session():
             logger.info(f"Session restored from {SESSION_PATH}")
         except Exception:
             logger.error("Error restoring session.")
+
+
 def save_screenshot():
     """Save a screenshot of the current page."""
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
@@ -150,6 +152,21 @@ def save_screenshot():
     filename = str(Path(screenshots_path) / Path(f"screenshot_{time.time()}.png"))
     browser.save_screenshot(filename)
     logger.info(f"Screenshot saved to {filename}")
+
+
+def get_element(value, find_by=By.ID):
+    """Get an element from the page."""
+    try:
+        return WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, value)))
+    except NoSuchElementException:
+        logger.error(f"Element '{value}' not found")
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
+def get_element_by_attr_value(attribute, value):
+    """Get an element by attribute value."""
+    return get_element(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
 def is_element_present(element, find_by=By.ID):
@@ -412,6 +429,8 @@ __all__ = [
     "double_click_by_xpath",
     "forward",
     "get_cookies",
+    "get_element",
+    "get_element_by_attr_value",
     "get_element_text",
     "go",
     "html",
