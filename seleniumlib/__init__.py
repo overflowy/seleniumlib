@@ -15,8 +15,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .browser import get_browser
-from .lib_config import get_config, get_logging_options, normalize_path
-from .lib_logging import setup_logging
+from .config import get_config, get_logging_options, normalize_path
+from .logger import setup_logging
 
 CONFIG = get_config()
 DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
