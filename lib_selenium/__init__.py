@@ -23,6 +23,7 @@ DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
 TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
 
+SESSION_PATH = CONFIG["Browser"].get("session_path")
 KILL_CHROMIUM_BEFORE_START = CONFIG["Browser"].get("kill_chromium_before_start", False)
 KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
 
@@ -70,24 +71,6 @@ if KILL_CHROMIUM_BEFORE_START:
 browser = get_browser()
 
 
-def save_session():
-    """Save the current session to a file. This will also save the current URL."""
-    cookies = browser.get_cookies()
-    cookies.insert(0, {"url": browser.current_url})
-    pickle.dump(cookies, open(CONFIG["Browser"]["session_path"], "wb"))
-
-
-def restore_session():
-    """Restore the session from a file. This will also restore the current URL."""
-    try:
-        cookies = pickle.load(open(CONFIG["Browser"]["session_path"], "rb"))
-        # Cannot set cookies for a domain that is not the current domain.
-        browser.get(cookies.pop(0)["url"])
-        for cookie in cookies:
-            browser.add_cookie(cookie)
-        browser.refresh()
-    except FileNotFoundError:
-        logger.error("Session file not found.")
 
 
 def current_url():
@@ -120,6 +103,44 @@ def forward():
     browser.forward()
 
 
+def get_cookies():
+    """Return the cookies."""
+    return browser.get_cookies()
+
+
+def add_cookie(cookie):
+    """Add a cookie."""
+    browser.add_cookie(cookie)
+
+
+def save_session():
+    """Save the current session to a file."""
+    if not SESSION_PATH:
+        raise ValueError("Session path not set in config.")
+    cookies = get_cookies()
+    cookies.insert(0, {"url": browser.current_url})
+    with open(SESSION_PATH, "wb") as f:
+        try:
+            pickle.dump(cookies, f)
+            logger.info(f"Session saved to {SESSION_PATH}")
+        except Exception:
+            logger.error("Error saving session.")
+
+
+def restore_session():
+    """Restore the session from a file."""
+    if not SESSION_PATH:
+        raise ValueError("Session path not set in config.")
+    with open(SESSION_PATH, "rb") as f:
+        try:
+            cookies = pickle.load(f)
+            go(cookies.pop(0)["url"])
+            for cookie in cookies:
+                add_cookie(cookie)
+            refresh()  # Refresh to apply cookies.
+            logger.info(f"Session restored from {SESSION_PATH}")
+        except Exception:
+            logger.error("Error restoring session.")
 def save_screenshot():
     """Save a screenshot of the current page."""
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
@@ -364,6 +385,7 @@ __all__ = [
     "By",
     "QUIT_WHEN_DONE",
     "accept_alert",
+    "add_cookie",
     "back",
     "browser",
     "click",
@@ -389,6 +411,7 @@ __all__ = [
     "double_click_by_tag_name",
     "double_click_by_xpath",
     "forward",
+    "get_cookies",
     "get_element_text",
     "go",
     "html",
