@@ -3,10 +3,6 @@ import os
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from .config import get_config
-
-CONFIG = get_config()
-
 
 def get_browser(browser_config):
     """Returns a browser instance based on the config file."""
