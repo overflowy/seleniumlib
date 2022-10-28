@@ -3,7 +3,7 @@ import re
 import sys
 from pathlib import Path
 
-import yaml
+import json
 
 EXPR = re.compile(r"{{(.*?)}}")
 os.environ["SCRIPT_DIR"] = str(Path(sys.argv[0]).parent)
@@ -38,8 +38,8 @@ def swap_env_vars(config):
 
 def get_config():
     """Return config after swapping environment variables."""
-    with open("config.yml") as f:
-        config = yaml.safe_load(f)
+    with open("config.json") as f:
+        config = json.load(f)
     return swap_env_vars(config)
 
 

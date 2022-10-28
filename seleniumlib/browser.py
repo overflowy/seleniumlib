@@ -3,7 +3,7 @@ import os
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-from .lib_config import get_config
+from .config import get_config
 
 CONFIG = get_config()
 
