@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .browser import get_browser
-from .config import get_config, get_logging_options, normalize_path
+from .config import get_config, get_logging_options
 from .logger import setup_logging
 
 CONFIG = get_config()
@@ -64,10 +64,11 @@ def kill_chromium():
 
 if not QUIT_WHEN_DONE or KILL_WD_BEFORE_START:
     kill_orphaned_processes()
+
 if KILL_CHROMIUM_BEFORE_START:
     kill_chromium()
 
-browser = get_browser()
+browser = get_browser(CONFIG["Browser"])
 
 
 def current_url():
