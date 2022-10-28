@@ -7,7 +7,6 @@ import time
 from pathlib import Path
 
 from selenium.common.exceptions import *
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -29,8 +28,6 @@ KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
 
 setup_logging(*get_logging_options(CONFIG))
 logger = logging.getLogger(__name__)
-
-By.ATTRIBUTE_VALUE = "attribute"  # Extend 'By' class to allow searching by attribute value.
 
 
 def timer(func):
