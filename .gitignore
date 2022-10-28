@@ -128,9 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Pipenv
-Pipfile
-Pipfile.lock
+# Poetry
+poetry.lock
 
 # Temporary files
 temp/

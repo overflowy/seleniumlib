@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "seleniumlib"
+version = "0.1.0"
+description = "Library based on Selenium that drastically simplifies web automation workflows."
+authors = ["algedi1 <deneb@riseup.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+selenium = "^4.5.0"
+webdriver-manager = "^3.8.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
