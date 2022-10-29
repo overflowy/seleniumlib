@@ -48,7 +48,7 @@ def try_open_config_file(config_file):
 
 def get_config():
     """Return config after expanding environment variables.
-    If SELENIUMLIB_CFG environment variable is defined, use that as config file."""
+    If available, use path defined via SELENIUMLIB_CFG env var."""
     if seleniumlib_cfg := os.environ.get("SELENIUMLIB_CFG"):
         config = try_open_config_file(seleniumlib_cfg)
     else:
