@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 selenium = "^4.5.0"
 webdriver-manager = "^3.8.4"
+packaging = "^21.3"
 
 
 [build-system]
