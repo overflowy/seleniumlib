@@ -14,19 +14,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .browser import get_browser
-from .config import get_config, get_logging_options
-from .logger import setup_logging
+from .config import get_config
+from .logger import get_logging_options, setup_logging
 
 CONFIG = get_config()
 DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
-TIMEOUT = CONFIG["Browser"].get("global_timeout", 5)
-
+TIMEOUT_SEC = CONFIG["Browser"].get("global_timeout_sec", 5)
 SESSION_PATH = CONFIG["Browser"].get("session_path")
 KILL_CHROMIUM_BEFORE_START = CONFIG["Browser"].get("kill_chromium_before_start", False)
 KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
 
-setup_logging(*get_logging_options(CONFIG))
+setup_logging(*get_logging_options(CONFIG["Logging"]))
 logger = logging.getLogger(__name__)
 
 

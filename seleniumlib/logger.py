@@ -18,6 +18,17 @@ LOGGING_MODES = {
 }
 
 
+def get_logging_options(logging_config):
+    """Return logging options from config."""
+
+    log_path = logging_config.get("log_path")
+    level = logging_config.get("level", "info")
+    log_exceptions = logging_config.get("log_exceptions", True)
+    display_stdout = logging_config.get("display_stdout", True)
+    mode = logging_config.get("mode", "a")
+    return log_path, level, log_exceptions, display_stdout, mode
+
+
 def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
     """Setup logging to file and/or stdout."""
 
@@ -44,6 +55,7 @@ def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
 
     def handle_exception(exc_type, exc_value, exc_traceback):
         """Log uncaught exceptions."""
+
         logger = logging.getLogger(__name__)
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)

@@ -4,7 +4,6 @@ import re
 import sys
 from pathlib import Path
 
-
 ENV_VAR_EXPR = re.compile(r"{{(.*?)}}")
 os.environ["SCRIPT_DIR"] = str(Path(sys.argv[0]).parent)
 
@@ -29,7 +28,9 @@ def expand_env_vars(config):
         for key, value in config[section].items():
             if not isinstance(value, str):
                 continue
-            if env_var := extract_text_between_double_curly_braces(value) and os.environ.get(env_var):
+            if env_var := extract_text_between_double_curly_braces(value):
+                if not os.environ.get(env_var):
+                    return
                 config[section][key] = value.replace("{{" + env_var + "}}", os.environ[env_var])
                 if "path" in key:
                     config[section][key] = normalize_path(config[section][key])
@@ -54,13 +55,3 @@ def get_config():
     else:
         config = try_open_config_file("config.json")
     return expand_env_vars(config)
-
-
-def get_logging_options(config):
-    """Return logging options from config."""
-    log_path = config["Logging"].get("log_path")
-    level = config["Logging"].get("level", "info")
-    log_exceptions = config["Logging"].get("log_exceptions", True)
-    display_stdout = config["Logging"].get("display_stdout", True)
-    mode = config["Logging"].get("mode", "a")
-    return log_path, level, log_exceptions, display_stdout, mode
