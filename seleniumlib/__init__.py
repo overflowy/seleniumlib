@@ -154,7 +154,7 @@ def save_screenshot():
 def get_element(value, find_by=By.ID):
     """Get an element from the page."""
     try:
-        return WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, value)))
+        return WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
     except NoSuchElementException:
         logger.error(f"Element '{value}' not found")
         if DEBUG_ON_EXCEPTION:
@@ -169,7 +169,7 @@ def get_element_by_attr_value(attribute, value):
 def is_element_present(element, find_by=By.ID):
     """Check if element exists."""
     try:
-        WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, element)))
+        WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
     except NoSuchElementException:
         return False
     return True
@@ -178,7 +178,7 @@ def is_element_present(element, find_by=By.ID):
 def get_element_text(element, find_by=By.ID):
     """Get the text of an element."""
     try:
-        return WebDriverWait(browser, TIMEOUT).until(EC.presence_of_element_located((find_by, element))).text
+        return WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element))).text
     except NoSuchElementException:
         logger.error(f"Element '{element}' not found")
         if DEBUG_ON_EXCEPTION:
@@ -204,7 +204,7 @@ def accept_alert():
     """Accept an alert."""
     text = None
     try:
-        alert = WebDriverWait(browser, TIMEOUT).until(EC.alert_is_present())
+        alert = WebDriverWait(browser, TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.accept()
         logger.info(f"Alert accepted: '{text}'")
@@ -220,7 +220,7 @@ def dismiss_alert():
     """Dismiss an alert."""
     text = None
     try:
-        alert = WebDriverWait(browser, TIMEOUT).until(EC.alert_is_present())
+        alert = WebDriverWait(browser, TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.dismiss()
         logger.info(f"Alert dismissed: '{text}'")
@@ -235,7 +235,7 @@ def dismiss_alert():
 def _click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
     try:
-        WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).click()
+        WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).click()
         if alias:
             logger.info(f"Clicked by {find_by}: '{alias}'")
         else:
@@ -303,7 +303,7 @@ def click_by_attribute(attribute, value, alias=None):
 def _double_click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
     try:
-        el = WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element)))
+        el = WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element)))
         ActionChains(browser).double_click(el).perform()
         if alias:
             logger.info(f"Double clicked by {find_by}: '{alias}'")
@@ -378,7 +378,7 @@ def _clear_text(element):
 def write(element, text, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it."""
     try:
-        el = WebDriverWait(browser, TIMEOUT).until(EC.element_to_be_clickable((find_by, element))).send_keys(text)
+        el = WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).send_keys(text)
         if clear_first:
             _clear_text(el)
         if alias:
