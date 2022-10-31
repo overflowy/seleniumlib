@@ -20,7 +20,7 @@ from .logger import get_logging_options, setup_logging
 CONFIG = get_config()
 DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
-TIMEOUT_SEC = CONFIG["Browser"].get("global_timeout_sec", 5)
+GLOBAL_TIMEOUT_SEC = CONFIG["Browser"].get("global_timeout_sec", 5)
 SESSION_PATH = CONFIG["Browser"].get("session_path")
 KILL_CHROMIUM_BEFORE_START = CONFIG["Browser"].get("kill_chromium_before_start", False)
 KILL_WD_BEFORE_START = CONFIG["Browser"].get("kill_wd_before_start", False)
@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 def timer(func):
+    """Decorator to time a function."""
+
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
         tic = time.perf_counter()
@@ -43,10 +45,10 @@ def timer(func):
 
 
 def kill_orphaned_processes():
-    """Kill orphaned chromedriver processes.
+    """Kill orphaned chromedriver processes if any.
     This is a workaround for killing orphaned processes
-    that are not killed when the browser is manually closed.
-    """
+    that are not killed when the browser is manually closed."""
+
     if sys.platform == "win32":
         os.system("taskkill /im chromedriver.exe /f")
     else:
@@ -54,7 +56,8 @@ def kill_orphaned_processes():
 
 
 def kill_chromium():
-    """Kill chromium process."""
+    """Kill chromium processes."""
+
     if sys.platform == "win32":
         os.system("taskkill /im chrome.exe /f")
     else:
@@ -72,46 +75,56 @@ browser = get_browser(CONFIG["Browser"])
 
 def current_url():
     """Return the current URL."""
+
     return browser.current_url
 
 
 def title():
     """Return the title of the current page."""
+
     return browser.title
 
 
 def go(url):
     """Go to a URL."""
+
     browser.get(url)
+    logger.info(f"Going to <{url}>")
 
 
 def refresh():
     """Refresh the current page."""
+
     browser.refresh()
 
 
 def back():
     """Go back to the previous page."""
+
     browser.back()
 
 
 def forward():
     """Go forward to the next page."""
+
     browser.forward()
 
 
 def get_cookies():
     """Return the cookies."""
+
     return browser.get_cookies()
 
 
 def add_cookie(cookie):
     """Add a cookie."""
+
     browser.add_cookie(cookie)
 
 
 def save_session():
     """Save the current session to a file."""
+
     if not SESSION_PATH:
         raise ValueError("Session path not set in config.")
     cookies = get_cookies()
@@ -126,6 +139,7 @@ def save_session():
 
 def restore_session():
     """Restore the session from a file."""
+
     if not SESSION_PATH:
         raise ValueError("Session path not set in config.")
     with open(SESSION_PATH, "rb") as f:
@@ -142,6 +156,7 @@ def restore_session():
 
 def save_screenshot():
     """Save a screenshot of the current page."""
+
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
         raise ValueError("Screenshots path not set in config.")
     if not Path(screenshots_path).exists():
@@ -153,8 +168,9 @@ def save_screenshot():
 
 def get_element(value, find_by=By.ID):
     """Get an element from the page."""
+
     try:
-        return WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
+        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
     except NoSuchElementException:
         logger.error(f"Element '{value}' not found")
         if DEBUG_ON_EXCEPTION:
@@ -163,13 +179,15 @@ def get_element(value, find_by=By.ID):
 
 def get_element_by_attr_value(attribute, value):
     """Get an element by attribute value."""
+
     return get_element(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
 def is_element_present(element, find_by=By.ID):
     """Check if element exists."""
+
     try:
-        WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
+        WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
     except NoSuchElementException:
         return False
     return True
@@ -177,8 +195,9 @@ def is_element_present(element, find_by=By.ID):
 
 def get_element_text(element, find_by=By.ID):
     """Get the text of an element."""
+
     try:
-        return WebDriverWait(browser, TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element))).text
+        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element))).text
     except NoSuchElementException:
         logger.error(f"Element '{element}' not found")
         if DEBUG_ON_EXCEPTION:
@@ -187,24 +206,28 @@ def get_element_text(element, find_by=By.ID):
 
 def html():
     """Return the HTML of the current page."""
+
     return browser.page_source
 
 
 def page_contains_text(text):
     """Check if page contains text."""
+
     return text in html()
 
 
 def script(script):
     """Execute a script."""
+
     browser.execute_script(script)
 
 
 def accept_alert():
     """Accept an alert."""
+
     text = None
     try:
-        alert = WebDriverWait(browser, TIMEOUT_SEC).until(EC.alert_is_present())
+        alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.accept()
         logger.info(f"Alert accepted: '{text}'")
@@ -218,9 +241,10 @@ def accept_alert():
 
 def dismiss_alert():
     """Dismiss an alert."""
+
     text = None
     try:
-        alert = WebDriverWait(browser, TIMEOUT_SEC).until(EC.alert_is_present())
+        alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.dismiss()
         logger.info(f"Alert dismissed: '{text}'")
@@ -234,8 +258,9 @@ def dismiss_alert():
 
 def _click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
+
     try:
-        WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).click()
+        WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).click()
         if alias:
             logger.info(f"Clicked by {find_by}: '{alias}'")
         else:
@@ -252,58 +277,69 @@ def _click(element, find_by=By.ID, alias=None):
 
 def click(element, find_by=By.ID, alias=None):
     """Click an element."""
+
     _click(element, find_by, alias)
 
 
 def click_by_id(element, alias=None):
     """Click an element by ID."""
+
     _click(element, find_by=By.ID, alias=alias)
 
 
 def click_by_xpath(element, alias=None):
     """Click an element by XPath."""
+
     _click(element, find_by=By.XPATH, alias=alias)
 
 
 def click_by_link_text(element, alias=None):
     """Click an element by link text."""
+
     _click(element, find_by=By.LINK_TEXT, alias=alias)
 
 
 def click_by_partial_link_text(element, alias=None):
     """Click an element by partial link text."""
+
     _click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
 
 
 def click_by_name(element, alias=None):
     """Click an element by name."""
+
     _click(element, find_by=By.NAME, alias=alias)
 
 
 def click_by_tag_name(element, alias=None):
     """Click an element by tag name."""
+
     _click(element, find_by=By.TAG_NAME, alias=alias)
 
 
 def click_by_class_name(element, alias=None):
     """Click an element by class name."""
+
     _click(element, find_by=By.CLASS_NAME, alias=alias)
 
 
 def click_by_css_selector(element, alias=None):
     """Click an element by CSS selector."""
+
     _click(element, find_by=By.CSS_SELECTOR, alias=alias)
 
 
 def click_by_attribute(attribute, value, alias=None):
     """Click an element by an attribute value."""
+
     _click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
 
 
 def _double_click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
+
     try:
-        el = WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element)))
+        el = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element)))
         ActionChains(browser).double_click(el).perform()
         if alias:
             logger.info(f"Double clicked by {find_by}: '{alias}'")
@@ -321,64 +357,80 @@ def _double_click(element, find_by=By.ID, alias=None):
 
 def double_click(element, find_by=By.ID, alias=None):
     """Double click an element."""
+
     _double_click(element, find_by, alias)
 
 
 def double_click_by_id(element, alias=None):
     """Double click an element by ID."""
+
     _double_click(element, find_by=By.ID, alias=alias)
 
 
 def double_click_by_xpath(element, alias=None):
     """Double click an element by XPath."""
+
     _double_click(element, find_by=By.XPATH, alias=alias)
 
 
 def double_click_by_link_text(element, alias=None):
     """Double click an element by link text."""
+
     _double_click(element, find_by=By.LINK_TEXT, alias=alias)
 
 
 def double_click_by_partial_link_text(element, alias=None):
     """Double click an element by partial link text."""
+
     _double_click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
 
 
 def double_click_by_name(element, alias=None):
     """Double click an element by name."""
+
     _double_click(element, find_by=By.NAME, alias=alias)
 
 
 def double_click_by_tag_name(element, alias=None):
     """Double click an element by tag name."""
+
     _double_click(element, find_by=By.TAG_NAME, alias=alias)
 
 
 def double_click_by_class_name(element, alias=None):
     """Double click an element by class name."""
+
     _double_click(element, find_by=By.CLASS_NAME, alias=alias)
 
 
 def double_click_by_css_selector(element, alias=None):
     """Double click an element by CSS selector."""
+
     _double_click(element, find_by=By.CSS_SELECTOR, alias=alias)
 
 
 def double_click_by_attribute(attribute, value, alias=None):
     """Double click an element by an attribute value."""
+
     _double_click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
 
 
 def _clear_text(element):
     """Clear text from an element."""
+
     element.send_keys(Keys.CONTROL + "a")
     element.send_keys(Keys.DELETE)
 
 
 def write(element, text, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it."""
+
     try:
-        el = WebDriverWait(browser, TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).send_keys(text)
+        el = (
+            WebDriverWait(browser, GLOBAL_TIMEOUT_SEC)
+            .until(EC.element_to_be_clickable((find_by, element)))
+            .send_keys(text)
+        )
         if clear_first:
             _clear_text(el)
         if alias:

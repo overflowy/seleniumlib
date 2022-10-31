@@ -6,12 +6,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 def get_browser(browser_config):
     """Returns a browser instance based on the config file."""
-    options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
-    return webdriver.Chrome(ChromeDriverManager().install(), options=options)
+
+    chrome_options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
+    return webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
 
 def parse_browser_options(chrome_options, browser_config):
     """Parse browser options from config file."""
+
     chrome_options.binary_location = browser_config.get("chromium_executable_path")
     prefs = {
         "safebrowsing.enabled": "false",
