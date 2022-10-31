@@ -50,7 +50,7 @@ def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
     logging.basicConfig(
         level=level,
         # Previous format: format="%(asctime)s::%(levelname)s::%(module)s::%(funcName)s::%(message)s",
-        format="%(asctime)s::%(levelname)s::%(funcName)s::%(message)s",
+        format="%(asctime)s::%(levelname)s::%(message)s",
         handlers=handlers,
     )
 

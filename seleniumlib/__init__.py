@@ -29,19 +29,22 @@ setup_logging(*get_logging_options(CONFIG["Logging"]))
 logger = logging.getLogger(__name__)
 
 
-def timer(func):
-    """Decorator to time a function."""
+def log_action(message):
+    """Decorator to log an action."""
 
-    @functools.wraps(func)
-    def wrapped(*args, **kwargs):
-        tic = time.perf_counter()
-        value = func(*args, **kwargs)
-        toc = time.perf_counter()
-        elapsed_time = toc - tic
-        logger.info(f"{func.__name__}::{elapsed_time:0.5f} seconds")
-        return value
+    def timer(func):
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            tic = time.perf_counter()
+            value = func(*args, **kwargs)
+            toc = time.perf_counter()
+            elapsed_time = toc - tic
+            logger.info(f"{func.__name__}::{message}::{elapsed_time:0.5f} seconds")
+            return value
 
-    return wrapped
+        return wrapped
+
+    return timer
 
 
 def kill_orphaned_processes():
@@ -490,7 +493,6 @@ __all__ = [
     "save_screenshot",
     "save_session",
     "script",
-    "timer",
     "title",
     "write",
 ]
