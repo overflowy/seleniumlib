@@ -222,16 +222,6 @@ def get_element_by_attr_value(attribute, value):
     return get_element(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
-def is_element_present(element, find_by=By.ID):
-    """Check if element exists."""
-
-    try:
-        WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
-    except NoSuchElementException:
-        return False
-    return True
-
-
 def html():
     """Return the HTML of the current page."""
 
