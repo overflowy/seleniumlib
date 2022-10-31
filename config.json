@@ -13,6 +13,7 @@
         "start_maximized": false,
         "quit_when_done": false,
         "debug_on_exception": true,
+        "screenshot_on_exception": false,
         "disable_selenium_logging": true,
         "disable_wdm_logging": true,
         "kill_chromium_before_start": true,

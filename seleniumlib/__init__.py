@@ -19,6 +19,7 @@ from .logger import get_logging_options, setup_logging
 
 CONFIG = get_config()
 DEBUG_ON_EXCEPTION = CONFIG["Browser"].get("debug_on_exception", False)
+SCREENSHOT_ON_EXCEPTION = CONFIG["Browser"].get("screenshot_on_exception", False)
 QUIT_WHEN_DONE = CONFIG["Browser"].get("quit_when_done", True)
 GLOBAL_TIMEOUT_SEC = CONFIG["Browser"].get("global_timeout_sec", 5)
 SESSION_PATH = CONFIG["Browser"].get("session_path")
