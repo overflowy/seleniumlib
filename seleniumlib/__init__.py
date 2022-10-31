@@ -30,7 +30,7 @@ setup_logging(*get_logging_options(CONFIG["Logging"]))
 logger = logging.getLogger(__name__)
 
 
-def log_action(message):
+def log_action(message=None):
     """Decorator to log an action."""
 
     def timer(func):
@@ -40,7 +40,10 @@ def log_action(message):
             value = func(*args, **kwargs)
             toc = time.perf_counter()
             elapsed_time = toc - tic
-            logger.info(f"{func.__name__}::{message}::{elapsed_time:0.5f} seconds")
+            if message:
+                logger.info(f"{func.__name__}::{message}::{elapsed_time:0.5f} seconds")
+            else:
+                logger.info(f"{func.__name__}::{elapsed_time:0.5f} seconds")
             return value
 
         return wrapped
@@ -48,6 +51,7 @@ def log_action(message):
     return timer
 
 
+@log_action()
 def kill_orphaned_processes():
     """Kill orphaned chromedriver processes if any.
     This is a workaround for killing orphaned processes
