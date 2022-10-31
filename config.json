@@ -14,7 +14,7 @@
         "debug_on_exception": true,
         "disable_selenium_logging": true,
         "disable_wdm_logging": true,
-        "kill_chromium_before_start": false,
+        "kill_chromium_before_start": true,
         "kill_wd_before_start": false
     },
     "Logging": {
@@ -22,6 +22,6 @@
         "level": "INFO",
         "log_exceptions": true,
         "display_stdout": true,
-        "mode": "APPEND"
+        "mode": "WRITE"
     }
 }
