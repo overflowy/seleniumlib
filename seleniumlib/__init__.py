@@ -199,6 +199,34 @@ def save_screenshot(name=None):
     logger.info(f"Screenshot saved to {filename}")
 
 
+def html():
+    """Return the HTML of the current page."""
+
+    return browser.page_source
+
+
+def source():
+    """Alias function for `html`."""
+
+    return html()
+
+
+def page_contains_text(text):
+    """Check if page contains text."""
+
+    return text in html()
+
+
+def script(script):
+    """Execute a script."""
+
+    @log_action(f"Execute script {script}")
+    def _script():
+        browser.execute_script(script)
+
+    _script()
+
+
 def get_alert():
     """Get an alert object."""
 
@@ -259,105 +287,16 @@ def get_element_by_attr_value(attribute, value):
     return get_element(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
-def html():
-    """Return the HTML of the current page."""
-
-    return browser.page_source
-
-
-def page_contains_text(text):
-    """Check if page contains text."""
-
-    return text in html()
-
-
-def script(script):
-    """Execute a script."""
-
-    @log_action(f"Execute script {script}")
-    def _script():
-        browser.execute_script(script)
-
-    _script()
-
-
-def _click(element, find_by=By.ID, alias=None):
+@log_action()
+def click(value, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
 
-    try:
-        WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).click()
-        if alias:
-            logger.info(f"Clicked by {find_by}: {alias}")
-        else:
-            logger.info(f"Clicked by {find_by}: {element}")
-        return
-    except Exception:
-        if alias:
-            logger.error(f"Could not click by {find_by}: {alias}")
-        else:
-            logger.error(f"Could not click by {find_by}: {element}")
-        if DEBUG_ON_EXCEPTION:
-            breakpoint()
-
-
-def click(element, find_by=By.ID, alias=None):
-    """Click an element."""
-
-    _click(element, find_by, alias)
-
-
-def click_by_id(element, alias=None):
-    """Click an element by ID."""
-
-    _click(element, find_by=By.ID, alias=alias)
-
-
-def click_by_xpath(element, alias=None):
-    """Click an element by XPath."""
-
-    _click(element, find_by=By.XPATH, alias=alias)
-
-
-def click_by_link_text(element, alias=None):
-    """Click an element by link text."""
-
-    _click(element, find_by=By.LINK_TEXT, alias=alias)
-
-
-def click_by_partial_link_text(element, alias=None):
-    """Click an element by partial link text."""
-
-    _click(element, find_by=By.PARTIAL_LINK_TEXT, alias=alias)
-
-
-def click_by_name(element, alias=None):
-    """Click an element by name."""
-
-    _click(element, find_by=By.NAME, alias=alias)
-
-
-def click_by_tag_name(element, alias=None):
-    """Click an element by tag name."""
-
-    _click(element, find_by=By.TAG_NAME, alias=alias)
-
-
-def click_by_class_name(element, alias=None):
-    """Click an element by class name."""
-
-    _click(element, find_by=By.CLASS_NAME, alias=alias)
-
-
-def click_by_css_selector(element, alias=None):
-    """Click an element by CSS selector."""
-
-    _click(element, find_by=By.CSS_SELECTOR, alias=alias)
-
-
-def click_by_attribute(attribute, value, alias=None):
-    """Click an element by an attribute value."""
-
-    _click(f"//*[@{attribute}='{value}']", find_by=By.XPATH, alias=alias)
+    get_element(value, find_by)
+    get_element(value, find_by).click()
+    if alias:
+        logger.info(f"Clicked by {find_by}: {alias}")
+    else:
+        logger.info(f"Clicked by {find_by}: {value}")
 
 
 def _double_click(element, find_by=By.ID, alias=None):
@@ -485,14 +424,6 @@ __all__ = [
     "browser",
     "click",
     "click_by_attribute",
-    "click_by_class_name",
-    "click_by_css_selector",
-    "click_by_id",
-    "click_by_link_text",
-    "click_by_name",
-    "click_by_partial_link_text",
-    "click_by_tag_name",
-    "click_by_xpath",
     "current_url",
     "dismiss_alert",
     "double_click",
