@@ -262,13 +262,13 @@ def dismiss_alert():
     logger.info(f"Alert dismissed: {alert_text}")
 
 
-def get_element(value, find_by=By.ID):
+def get_element_obj(element, find_by=By.ID):
     """Get an element from the page."""
 
     try:
-        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
+        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
     except NoSuchElementException:
-        logger.error(f"Element {value} not found (method: {find_by})")
+        logger.error(f"Element {element} not found (method: {find_by})")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
@@ -278,28 +278,29 @@ def get_element(value, find_by=By.ID):
 def get_element_text(element, find_by=By.ID):
     """Get the text of an element."""
 
-    return get_element(element, find_by).text
+    return get_element_obj(element, find_by).text
 
 
 def get_element_by_attr_value(attribute, value):
     """Get an element by attribute value."""
 
-    return get_element(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
+    return get_element_obj(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
 @log_action()
-def click(value, find_by=By.ID, alias=None):
+def click(element, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
 
-    get_element(value, find_by)
-    get_element(value, find_by).click()
+    get_element_obj(element, find_by).click()
+    get_element_obj(element, find_by).click
     if alias:
         logger.info(f"Clicked by {find_by}: {alias}")
     else:
-        logger.info(f"Clicked by {find_by}: {value}")
+        logger.info(f"Clicked by {find_by}: {element}")
 
 
-def _double_click(element, find_by=By.ID, alias=None):
+@log_action()
+def _double_click(value, find_by=By.ID, alias=None):
     """Wait for an element to be available and click it."""
 
     try:
@@ -438,7 +439,7 @@ __all__ = [
     "double_click_by_xpath",
     "forward",
     "get_cookies",
-    "get_element",
+    "get_element_obj",
     "get_element_by_attr_value",
     "get_element_text",
     "go",
