@@ -7,6 +7,7 @@
         "screenshots_path": "{{SCRIPT_DIR}}/temp/Screenshots",
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
         "global_timeout_sec": 5,
+        "page_load_strategy": "NORMAL",
         "headless": false,
         "sandbox": true,
         "start_maximized": false,

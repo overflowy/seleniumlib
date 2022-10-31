@@ -1,6 +1,7 @@
 import os
 
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
 
 
@@ -8,6 +9,12 @@ def get_browser(browser_config):
     """Returns a browser instance based on the config file."""
 
     chrome_options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
+    if page_load_strategy := browser_config.get("page_load_strategy"):
+        desired_caps = DesiredCapabilities.CHROME
+        desired_caps["pageLoadStrategy"] = page_load_strategy.lower()
+        return webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options, desired_capabilities=desired_caps
+        )
     return webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
 
