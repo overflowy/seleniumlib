@@ -63,6 +63,7 @@ def kill_orphaned_processes():
         os.system("pkill -f chromedriver")
 
 
+@log_action()
 def kill_chromium():
     """Kill chromium processes."""
 
@@ -96,22 +97,28 @@ def title():
 def go(url):
     """Go to a URL."""
 
-    browser.get(url)
-    logger.info(f"Going to <{url}>")
+    @log_action(f"Go to {url}")
+    def _go():
+        browser.get(url)
+
+    _go()
 
 
+@log_action()
 def refresh():
     """Refresh the current page."""
 
     browser.refresh()
 
 
+@log_action()
 def back():
     """Go back to the previous page."""
 
     browser.back()
 
 
+@log_action()
 def forward():
     """Go forward to the next page."""
 
@@ -125,31 +132,45 @@ def get_cookies():
 
 
 def add_cookie(cookie):
-    """Add a cookie."""
+    """Add a cookie: {name: value}."""
 
-    browser.add_cookie(cookie)
+    @log_action(f"Add cookie {cookie}")
+    def _add_cookie(cookie):
+        browser.add_cookie(cookie)
+
+    _add_cookie(cookie)
 
 
+def check_session_path():
+    """Check if session path is set."""
+
+    if not SESSION_PATH:
+        raise ValueError("Session path is not set")
+
+
+@log_action()
 def save_session():
     """Save the current session to a file."""
 
-    if not SESSION_PATH:
-        raise ValueError("Session path not set in config.")
+    check_session_path()
+
     cookies = get_cookies()
     cookies.insert(0, {"url": browser.current_url})
+
     with open(SESSION_PATH, "wb") as f:
         try:
             pickle.dump(cookies, f)
-            logger.info(f"Session saved to {SESSION_PATH}")
-        except Exception:
+            logger.info(f"Session saved to {SESSION_PATH}>")
+        except FileNotFoundError:
             logger.error("Error saving session.")
 
 
+@log_action()
 def restore_session():
     """Restore the session from a file."""
 
-    if not SESSION_PATH:
-        raise ValueError("Session path not set in config.")
+    check_session_path()
+
     with open(SESSION_PATH, "rb") as f:
         try:
             cookies = pickle.load(f)
@@ -162,7 +183,7 @@ def restore_session():
             logger.error("Error restoring session.")
 
 
-def save_screenshot():
+@log_action()
 def save_screenshot(name=None):
     """Save a screenshot of the current page."""
 
@@ -184,7 +205,7 @@ def get_element(value, find_by=By.ID):
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
     except NoSuchElementException:
-        logger.error(f"Element '{value}' not found")
+        logger.error(f"Element {value} not found")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
@@ -211,7 +232,7 @@ def get_element_text(element, find_by=By.ID):
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element))).text
     except NoSuchElementException:
-        logger.error(f"Element '{element}' not found")
+        logger.error(f"Element {element} not found")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
@@ -231,9 +252,14 @@ def page_contains_text(text):
 def script(script):
     """Execute a script."""
 
-    browser.execute_script(script)
+    @log_action(f"Execute script {script}")
+    def _script():
+        browser.execute_script(script)
+
+    _script()
 
 
+@log_action()
 def accept_alert():
     """Accept an alert."""
 
@@ -242,15 +268,16 @@ def accept_alert():
         alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.accept()
-        logger.info(f"Alert accepted: '{text}'")
+        logger.info(f"Alert accepted: {text}")
     except Exception:
         if text:
-            logger.error(f"Could not accept alert: '{text}'")
+            logger.error(f"Could not accept alert: {text}")
         logger.error("Could not accept alert")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
 
+@log_action()
 def dismiss_alert():
     """Dismiss an alert."""
 
@@ -259,10 +286,10 @@ def dismiss_alert():
         alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
         text = alert.text
         alert.dismiss()
-        logger.info(f"Alert dismissed: '{text}'")
+        logger.info(f"Alert dismissed: {text}")
     except Exception:
         if text:
-            logger.error(f"Could not dismiss alert: '{text}'")
+            logger.error(f"Could not dismiss alert: {text}")
         logger.error("Could not dismiss alert")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
@@ -274,15 +301,15 @@ def _click(element, find_by=By.ID, alias=None):
     try:
         WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.element_to_be_clickable((find_by, element))).click()
         if alias:
-            logger.info(f"Clicked by {find_by}: '{alias}'")
+            logger.info(f"Clicked by {find_by}: {alias}")
         else:
-            logger.info(f"Clicked by {find_by}: '{element}'")
+            logger.info(f"Clicked by {find_by}: {element}")
         return
     except Exception:
         if alias:
-            logger.error(f"Could not click by {find_by}: '{alias}'")
+            logger.error(f"Could not click by {find_by}: {alias}")
         else:
-            logger.error(f"Could not click by {find_by}: '{element}'")
+            logger.error(f"Could not click by {find_by}: {element}")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
@@ -434,13 +461,17 @@ def _clear_text(element):
     element.send_keys(Keys.DELETE)
 
 
-def write(element, text, find_by=By.ID, alias=None, clear_first=True):
+def write(text, into=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it."""
+
+    if not into:
+        ActionChains(browser).send_keys(text).perform()
+        return
 
     try:
         el = (
             WebDriverWait(browser, GLOBAL_TIMEOUT_SEC)
-            .until(EC.element_to_be_clickable((find_by, element)))
+            .until(EC.element_to_be_clickable((find_by, into)))
             .send_keys(text)
         )
         if clear_first:
@@ -448,13 +479,13 @@ def write(element, text, find_by=By.ID, alias=None, clear_first=True):
         if alias:
             logger.info(f"Wrote into by {find_by}: '{alias}'")
         else:
-            logger.info(f"Wrote into by {find_by}: '{element}'")
+            logger.info(f"Wrote into by {find_by}: '{into}'")
         return
     except Exception:
         if alias:
             logger.error(f"Could not write into by {find_by}: '{alias}'")
         else:
-            logger.error(f"Could not write into by {find_by}: '{element}'")
+            logger.error(f"Could not write into by {find_by}: '{into}'")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
