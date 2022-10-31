@@ -205,9 +205,15 @@ def get_element(value, find_by=By.ID):
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
     except NoSuchElementException:
-        logger.error(f"Element {value} not found")
+        logger.error(f"Element {value} not found (method: {find_by})")
         if DEBUG_ON_EXCEPTION:
             breakpoint()
+
+
+def get_element_text(element, find_by=By.ID):
+    """Get the text of an element."""
+
+    return get_element(element, find_by).text
 
 
 def get_element_by_attr_value(attribute, value):
@@ -224,17 +230,6 @@ def is_element_present(element, find_by=By.ID):
     except NoSuchElementException:
         return False
     return True
-
-
-def get_element_text(element, find_by=By.ID):
-    """Get the text of an element."""
-
-    try:
-        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element))).text
-    except NoSuchElementException:
-        logger.error(f"Element {element} not found")
-        if DEBUG_ON_EXCEPTION:
-            breakpoint()
 
 
 def html():
