@@ -199,6 +199,41 @@ def save_screenshot(name=None):
     logger.info(f"Screenshot saved to {filename}")
 
 
+def get_alert():
+    """Get an alert object."""
+
+    try:
+        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
+    except Exception:  # TODO: Be more specific.
+        logger.error("Alert not found")
+        if SCREENSHOT_ON_EXCEPTION:
+            save_screenshot()
+        if DEBUG_ON_EXCEPTION:
+            breakpoint()
+
+
+@log_action()
+def accept_alert():
+    """Accept an alert."""
+
+    alert_text = None
+    alert = get_alert()
+    alert_text = alert.text
+    alert.accept()
+    logger.info(f"Alert accepted: {alert_text}")
+
+
+@log_action()
+def dismiss_alert():
+    """Dismiss an alert."""
+
+    alert_text = None
+    alert = get_alert()
+    alert_text = alert.text
+    alert.dismiss()
+    logger.info(f"Alert dismissed: {alert_text}")
+
+
 def get_element(value, find_by=By.ID):
     """Get an element from the page."""
 
@@ -206,6 +241,8 @@ def get_element(value, find_by=By.ID):
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, value)))
     except NoSuchElementException:
         logger.error(f"Element {value} not found (method: {find_by})")
+        if SCREENSHOT_ON_EXCEPTION:
+            save_screenshot()
         if DEBUG_ON_EXCEPTION:
             breakpoint()
 
@@ -242,42 +279,6 @@ def script(script):
         browser.execute_script(script)
 
     _script()
-
-
-@log_action()
-def accept_alert():
-    """Accept an alert."""
-
-    text = None
-    try:
-        alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
-        text = alert.text
-        alert.accept()
-        logger.info(f"Alert accepted: {text}")
-    except Exception:
-        if text:
-            logger.error(f"Could not accept alert: {text}")
-        logger.error("Could not accept alert")
-        if DEBUG_ON_EXCEPTION:
-            breakpoint()
-
-
-@log_action()
-def dismiss_alert():
-    """Dismiss an alert."""
-
-    text = None
-    try:
-        alert = WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
-        text = alert.text
-        alert.dismiss()
-        logger.info(f"Alert dismissed: {text}")
-    except Exception:
-        if text:
-            logger.error(f"Could not dismiss alert: {text}")
-        logger.error("Could not dismiss alert")
-        if DEBUG_ON_EXCEPTION:
-            breakpoint()
 
 
 def _click(element, find_by=By.ID, alias=None):
