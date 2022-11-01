@@ -125,6 +125,16 @@ def forward():
     browser.forward()
 
 
+def wait(sec):
+    """Wait for a number of seconds."""
+
+    @log_action(f"Wait for {sec} seconds")
+    def _wait():
+        browser.implicitly_wait(sec)
+
+    _wait()
+
+
 def get_cookies():
     """Return the cookies."""
 
@@ -189,6 +199,7 @@ def save_screenshot(name=None):
 
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
         raise ValueError("Screenshots path not set in config.")
+
     if not Path(screenshots_path).exists():
         Path(screenshots_path).mkdir(parents=True)
     if name:
@@ -376,7 +387,6 @@ __all__ = [
     "get_element_text",
     "go",
     "html",
-    "is_element_present",
     "page_contains_text",
     "refresh",
     "restore_session",
@@ -385,4 +395,5 @@ __all__ = [
     "script",
     "title",
     "write",
+    "wait",
 ]
