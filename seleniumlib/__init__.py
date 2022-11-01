@@ -332,40 +332,30 @@ def double_click(element, find_by=By.LINK_TEXT, alias=None):
         logger.info(f"Double clicked by {find_by}: {element}")
 
 
-def _clear_text(element):
+def clear_text(element_obj):
     """Clear text from an element."""
 
-    element.send_keys(Keys.CONTROL + "a")
-    element.send_keys(Keys.DELETE)
+    element_obj.send_keys(Keys.CONTROL + "a")
+    element_obj.send_keys(Keys.DELETE)
 
 
 def write(text, into=None, find_by=By.ID, alias=None, clear_first=True):
-    """Wait for an element to be available and write into it."""
+    """Wait for an element to be available and write into it.
+    If no element is specified, simply write into the current page.
+    """
 
     if not into:
         ActionChains(browser).send_keys(text).perform()
         return
 
-    try:
-        el = (
-            WebDriverWait(browser, GLOBAL_TIMEOUT_SEC)
-            .until(EC.element_to_be_clickable((find_by, into)))
-            .send_keys(text)
-        )
-        if clear_first:
-            _clear_text(el)
-        if alias:
-            logger.info(f"Wrote into by {find_by}: '{alias}'")
-        else:
-            logger.info(f"Wrote into by {find_by}: '{into}'")
-        return
-    except Exception:
-        if alias:
-            logger.error(f"Could not write into by {find_by}: '{alias}'")
-        else:
-            logger.error(f"Could not write into by {find_by}: '{into}'")
-        if DEBUG_ON_EXCEPTION:
-            breakpoint()
+    element_obj = get_element_obj(into, find_by)
+    if clear_first:
+        clear_text(element_obj)
+    element_obj.send_keys(text)
+    if alias:
+        logger.info(f"Wrote into by {find_by}: '{alias}'")
+    else:
+        logger.info(f"Wrote into by {find_by}: '{into}'")
 
 
 __all__ = [
