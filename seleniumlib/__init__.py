@@ -309,15 +309,14 @@ def click(element, find_by=By.LINK_TEXT, alias=None):
     _click(element, find_by)
 
 
-@log_action()
 def click_by_attr_value(attribute, value, alias=None):
     """Click an element by attribute value."""
 
-    get_element_by_attr_value(attribute, value).click()
-    if alias:
-        logger.info(f"Clicked by attribute value: {alias}")
-    else:
-        logger.info(f"Clicked by attribute value: {attribute}={value}")
+    @log_action(f"Click {attribute}={value} {alias or ''}")
+    def _click_by_attr_value(attribute, value):
+        get_element_by_attr_value(attribute, value).click()
+
+    _click_by_attr_value(attribute, value)
 
 
 @log_action()
