@@ -299,7 +299,7 @@ def get_element_by_attr_value(attribute, value):
 
 
 @log_action()
-def click(element, find_by=By.ID, alias=None):
+def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
     get_element_obj(element, find_by).click()
@@ -321,11 +321,11 @@ def click_by_attr_value(attribute, value, alias=None):
 
 
 @log_action()
-def double_click(element, find_by=By.ID, alias=None):
+def double_click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    el = get_element_obj(element, find_by)
-    ActionChains(browser).double_click(el).perform()
+    element_obj = get_element_obj(element, find_by)
+    ActionChains(browser).double_click(element_obj).perform()
     if alias:
         logger.info(f"Double clicked by {find_by}: {alias}")
     else:
