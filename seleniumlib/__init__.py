@@ -302,11 +302,11 @@ def get_element_by_attr_value(attribute, value):
 def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    get_element_obj(element, find_by).click()
-    if alias:
-        logger.info(f"Clicked by {find_by}: {alias}")
-    else:
-        logger.info(f"Clicked by {find_by}: {element}")
+    @log_action(f"Click {alias or element} (method: {find_by})")
+    def _click(element, find_by):
+        get_element_obj(element, find_by).click()
+
+    _click(element, find_by)
 
 
 @log_action()
