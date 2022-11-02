@@ -318,16 +318,15 @@ def click_by_attr_value(attribute, value, alias=None):
     _click_by_attr_value(attribute, value)
 
 
-@log_action()
 def double_click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    element_obj = get_element_obj(element, find_by)
-    ActionChains(browser).double_click(element_obj).perform()
-    if alias:
-        logger.info(f"Double clicked by {find_by}: {alias}")
-    else:
-        logger.info(f"Double clicked by {find_by}: {element}")
+    @log_action(f"Double click {alias or element} (method: {find_by})")
+    def _double_click(element, find_by):
+        element_obj = get_element_obj(element, find_by)
+        ActionChains(browser).double_click(element_obj).perform()
+
+    _double_click(element, find_by)
 
 
 def clear_text(element_obj):
