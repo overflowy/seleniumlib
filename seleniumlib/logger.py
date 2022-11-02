@@ -39,7 +39,7 @@ def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
     level = LOGGING_LEVEL.get(level.lower(), logging.INFO)
-    mode = LOGGING_MODES.get(mode.lower())
+    mode = LOGGING_MODES.get(mode.lower(), "w")
     handlers = [logging.FileHandler(log_path, mode=mode)]
 
     if display_stdout:
