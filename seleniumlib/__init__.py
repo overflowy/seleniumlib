@@ -298,7 +298,6 @@ def get_element_by_attr_value(attribute, value):
     return get_element_obj(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
-@log_action()
 def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
