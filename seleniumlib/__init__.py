@@ -155,7 +155,7 @@ def check_session_path():
     """Check if session path is set."""
 
     if not SESSION_PATH:
-        raise ValueError("Session path is not set")
+        raise ValueError("Session path is not set.")
 
 
 @log_action()

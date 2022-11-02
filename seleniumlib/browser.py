@@ -9,7 +9,9 @@ def get_browser(browser_config):
     """Returns a browser instance based on the config file."""
 
     chrome_options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
-    if page_load_strategy := browser_config.get("page_load_strategy"):
+    if page_load_strategy := browser_config.get("page_load_strategy", "normal"):
+        if page_load_strategy.lower() not in ["normal", "eager", "none"]:
+            raise ValueError("Invalid page load strategy. Must be one of: NORMAL, EAGER, NONE.")
         desired_caps = DesiredCapabilities.CHROME
         desired_caps["pageLoadStrategy"] = page_load_strategy.lower()
         return webdriver.Chrome(
