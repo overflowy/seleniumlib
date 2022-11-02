@@ -336,23 +336,23 @@ def clear_text(element_obj):
     element_obj.send_keys(Keys.DELETE)
 
 
-def write(text, into=None, find_by=By.ID, alias=None, clear_first=True):
+def write(text, element=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
     If no element is specified, simply write into the current page.
     """
 
-    if not into:
-        ActionChains(browser).send_keys(text).perform()
-        return
+    @log_action(f"Write {text} into {alias or element} (method: {find_by})")
+    def _write():
+        if element:
+            element_obj = get_element_obj(element, find_by)
+            if clear_first:
+                clear_text(element_obj)
+            element_obj.send_keys(text)
+        else:
+            ActionChains(browser).send_keys(text).perform()
+            return
 
-    element_obj = get_element_obj(into, find_by)
-    if clear_first:
-        clear_text(element_obj)
-    element_obj.send_keys(text)
-    if alias:
-        logger.info(f"Wrote into by {find_by}: '{alias}'")
-    else:
-        logger.info(f"Wrote into by {find_by}: '{into}'")
+    _write()
 
 
 __all__ = [
