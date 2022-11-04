@@ -10,6 +10,10 @@
         "page_load_strategy": "NORMAL",
         "headless": false,
         "sandbox": true,
+        "window_size": {
+            "width": 1920,
+            "height": 1080
+        },
         "start_maximized": false,
         "quit_when_done": false,
         "debug_on_exception": true,

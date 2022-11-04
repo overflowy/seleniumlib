@@ -38,6 +38,9 @@ def parse_browser_options(chrome_options, browser_config):
                 chrome_options.add_argument("--headless")
             case "sandbox" if not browser_config.get("sandbox"):
                 chrome_options.add_argument("--no-sandbox")
+            case "window_size" if (window_size := browser_config.get("window_size")):
+                width, height = window_size.get("width"), window_size.get("height")
+                chrome_options.add_argument(f"--window-size={width},{height}")
             case "start_maximized" if browser_config.get("start_maximized"):
                 chrome_options.add_argument("--start-maximized")
             case "user_agent" if user_agent := browser_config.get("user_agent"):
