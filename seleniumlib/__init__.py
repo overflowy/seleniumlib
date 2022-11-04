@@ -187,7 +187,7 @@ def save_session():
             pickle.dump(cookies, f)
             logger.info(f"Session saved to {SESSION_PATH}>")
         except FileNotFoundError:
-            logger.error("Error saving session.")
+            logger.critical("Error saving session.")
 
 
 @log_action()
@@ -205,7 +205,7 @@ def restore_session():
             refresh()  # Refresh to apply cookies.
             logger.info(f"Session restored from {SESSION_PATH}")
         except Exception:
-            logger.error("Error restoring session.")
+            logger.critical("Error restoring session.")
 
 
 def save_screenshot(name=None):
@@ -280,7 +280,7 @@ def get_alert():
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
     except Exception:  # TODO: Be more specific.
-        logger.error("Alert not found")
+        logger.critical("Alert not found")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
@@ -315,7 +315,7 @@ def get_element_obj(element, find_by=By.ID):
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
     except TimeoutException:
-        logger.error(f"Element {element} not found (method: {find_by})")
+        logger.critical(f"Element {element} not found (method: {find_by})")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
