@@ -23,7 +23,10 @@ def get_browser(browser_config):
 def parse_browser_options(chrome_options, browser_config):
     """Parse browser options from config file."""
 
-    chrome_options.binary_location = browser_config.get("chromium_executable_path")
+    if not (chrome_executable_path := browser_config.get("chromium_executable_path")):
+        raise ValueError("chrome_executable_path must be set in config file.")
+    chrome_options.binary_location = chrome_executable_path
+
     prefs = {
         "safebrowsing.enabled": "false",
         "profile.exit_type": "Normal",
