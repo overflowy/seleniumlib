@@ -353,7 +353,7 @@ def double_click(element, find_by=By.LINK_TEXT, alias=None):
 def clear_text(element_obj):
     """Clear text from an element."""
 
-    element_obj.send_keys(Keys.CONTROL + "a")
+    element_obj.send_keys(f"{Keys.CONTROL}a")
     element_obj.send_keys(Keys.DELETE)
 
 
