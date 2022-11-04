@@ -365,6 +365,17 @@ def double_click(element, find_by=By.LINK_TEXT, alias=None):
     _double_click(element, find_by)
 
 
+def double_click_by_attr_value(attribute, value, alias=None):
+    """Double click an element by attribute value."""
+
+    @log_action(f"Double click {attribute}={value} {alias or ''}")
+    def _double_click_by_attr_value(attribute, value):
+        element_obj = get_element_by_attr_value(attribute, value)
+        ActionChains(browser).double_click(element_obj).perform()
+
+    _double_click_by_attr_value(attribute, value)
+
+
 def clear_text(element_obj):
     """Clear text from an element."""
 
@@ -404,6 +415,7 @@ __all__ = [
     "current_url",
     "dismiss_alert",
     "double_click",
+    "double_click_by_attr_value",
     "forward",
     "get_alert",
     "get_cookies",
