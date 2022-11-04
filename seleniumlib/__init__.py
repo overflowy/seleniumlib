@@ -337,21 +337,28 @@ def get_element_by_attr_value(attribute, value):
 def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    @log_action(f"Click {alias or element} (method: {find_by})")
-    def _click(element, find_by):
-        get_element_obj(element, find_by).click()
+    match element:
+        case str():
 
-    _click(element, find_by)
+            @log_action(f"Click {alias or element} (method: {find_by})")
+            def _click():
+                get_element_obj(element, find_by).click()
 
+            _click()
 
-def click_by_attr_value(attribute, value, alias=None):
-    """Click an element by attribute value."""
+        case dict():
+            try:
+                attr, value = element.popitem()
+            except Exception:
+                raise ValueError("`element` must be a dict with one attribute and value pair.")
 
-    @log_action(f"Click {attribute}={value} {alias or ''}")
-    def _click_by_attr_value(attribute, value):
-        get_element_by_attr_value(attribute, value).click()
+            @log_action(f"Click {attr}={value} {alias or ''}")
+            def _click_by_attr_value():
+                """Click an element by attribute value."""
 
-    _click_by_attr_value(attribute, value)
+                get_element_by_attr_value(attr, value).click()
+
+            _click_by_attr_value()
 
 
 def double_click(element, find_by=By.LINK_TEXT, alias=None):
@@ -410,7 +417,6 @@ __all__ = [
     "back",
     "browser",
     "click",
-    "click_by_attr_value",
     "close",
     "current_url",
     "dismiss_alert",
