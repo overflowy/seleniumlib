@@ -213,6 +213,24 @@ def save_screenshot(name=None):
     _save_screenshot()
 
 
+def save_screenshot_every_n_seconds(n_sec, until_sec=0, name=None):
+    """Save a screenshot every n seconds, until until_sec seconds have passed."""
+
+    if not until_sec:
+        while True:
+            save_screenshot(name)
+            time.sleep(n_sec)
+    else:
+        if until_sec <= n_sec:
+            raise ValueError("until must be greater than n_sec.")
+
+        seconds_passed = 0
+        while seconds_passed < until_sec:
+            wait(n_sec)
+            seconds_passed += n_sec
+            save_screenshot(name=name)
+
+
 def html():
     """Return the HTML of the current page."""
 
@@ -385,6 +403,7 @@ __all__ = [
     "refresh",
     "restore_session",
     "save_screenshot",
+    "save_screenshot_every_n_seconds",
     "save_session",
     "script",
     "source",
