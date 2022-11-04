@@ -160,10 +160,10 @@ def add_cookie(cookie):
     """Add a cookie: `{name: value}`."""
 
     @log_action(f"Add cookie {cookie}")
-    def _add_cookie(cookie):
+    def _add_cookie():
         browser.add_cookie(cookie)
 
-    _add_cookie(cookie)
+    _add_cookie()
 
 
 def check_session_path():
@@ -365,22 +365,22 @@ def double_click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
     @log_action(f"Double click {alias or element} (method: {find_by})")
-    def _double_click(element, find_by):
+    def _double_click():
         element_obj = get_element_obj(element, find_by)
         ActionChains(browser).double_click(element_obj).perform()
 
-    _double_click(element, find_by)
+    _double_click()
 
 
 def double_click_by_attr_value(attribute, value, alias=None):
     """Double click an element by attribute value."""
 
     @log_action(f"Double click {attribute}={value} {alias or ''}")
-    def _double_click_by_attr_value(attribute, value):
+    def _double_click_by_attr_value():
         element_obj = get_element_by_attr_value(attribute, value)
         ActionChains(browser).double_click(element_obj).perform()
 
-    _double_click_by_attr_value(attribute, value)
+    _double_click_by_attr_value()
 
 
 def clear_text(element_obj):
