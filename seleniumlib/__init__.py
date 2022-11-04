@@ -82,6 +82,19 @@ if KILL_CHROMIUM_BEFORE_START:
 browser = get_browser(CONFIG["Browser"])
 
 
+def close():
+    """Close the browser."""
+
+    @log_action()
+    def _close():
+        browser.close()
+
+    _close()
+
+
+def quit():
+    """Close the browser. Alias function for `close`."""
+    close()
 def current_url():
     """Return the current URL."""
 
@@ -385,6 +398,7 @@ __all__ = [
     "browser",
     "click",
     "click_by_attr_value",
+    "close",
     "current_url",
     "dismiss_alert",
     "double_click",
@@ -400,6 +414,7 @@ __all__ = [
     "kill_orphaned_processes",
     "log_action",
     "page_contains_text",
+    "quit",
     "refresh",
     "restore_session",
     "save_screenshot",
