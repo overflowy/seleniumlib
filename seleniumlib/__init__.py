@@ -130,7 +130,7 @@ def wait(sec):
 
     @log_action(f"Wait for {sec} seconds")
     def _wait():
-        browser.implicitly_wait(sec)
+        time.sleep(sec)
 
     _wait()
 
