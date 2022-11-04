@@ -193,21 +193,24 @@ def restore_session():
             logger.error("Error restoring session.")
 
 
-@log_action()
 def save_screenshot(name=None):
     """Save a screenshot of the current page."""
 
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
         raise ValueError("Screenshots path not set in config.")
-
     if not Path(screenshots_path).exists():
         Path(screenshots_path).mkdir(parents=True)
+
     if name:
         filename = str(Path(screenshots_path) / Path(f"screenshot_{name}_{time.time()}.png"))
     else:
         filename = str(Path(screenshots_path) / Path(f"screenshot_{time.time()}.png"))
-    browser.save_screenshot(filename)
-    logger.info(f"Screenshot saved to {filename}")
+
+    @log_action(f"Save screenshot to {filename}")
+    def _save_screenshot():
+        browser.save_screenshot(filename)
+
+    _save_screenshot()
 
 
 def html():
