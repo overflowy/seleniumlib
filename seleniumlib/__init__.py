@@ -295,11 +295,11 @@ def dismiss_alert():
 
 
 def get_element_obj(element, find_by=By.ID):
-    """Get an element from the page."""
+    """Get the object of an element."""
 
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
-    except NoSuchElementException:
+    except TimeoutException:
         logger.error(f"Element {element} not found (method: {find_by})")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
