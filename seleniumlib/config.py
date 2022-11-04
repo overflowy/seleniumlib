@@ -17,7 +17,7 @@ def extract_text_between_double_curly_braces(text):
 
 
 def normalize_path(path):
-    """Return normalized path as string."""
+    """Return normalized `path` as string."""
 
     n_path = Path(path).expanduser().resolve()
     return str(n_path)
@@ -53,7 +53,7 @@ def try_open_config_file(config_file):
 
 def get_config():
     """Return config after expanding environment variables.
-    If available, use path defined via SELENIUMLIB_CFG env var."""
+    If available, use path defined via `SELENIUMLIB_CFG` env var."""
 
     if seleniumlib_cfg := os.environ.get("SELENIUMLIB_CFG"):
         config = try_open_config_file(normalize_path(seleniumlib_cfg))

@@ -53,7 +53,7 @@ def log_action(message=None):
 
 @log_action()
 def kill_orphaned_processes():
-    """Kill orphaned chromedriver processes if any.
+    """Kill orphaned `chromedriver` processes if any.
     This is a workaround for killing orphaned processes
     that are not killed when the browser is manually closed."""
 
@@ -65,7 +65,7 @@ def kill_orphaned_processes():
 
 @log_action()
 def kill_chromium():
-    """Kill chromium processes."""
+    """Kill `chromium` processes."""
 
     if sys.platform == "win32":
         os.system("taskkill /im chrome.exe /f")
@@ -95,6 +95,8 @@ def close():
 def quit():
     """Close the browser. Alias function for `close`."""
     close()
+
+
 def current_url():
     """Return the current URL."""
 
@@ -155,7 +157,7 @@ def get_cookies():
 
 
 def add_cookie(cookie):
-    """Add a cookie: {name: value}."""
+    """Add a cookie: `{name: value}`."""
 
     @log_action(f"Add cookie {cookie}")
     def _add_cookie(cookie):
@@ -227,7 +229,7 @@ def save_screenshot(name=None):
 
 
 def save_screenshot_every_n_seconds(n_sec, until_sec=0, name=None):
-    """Save a screenshot every n seconds, until until_sec seconds have passed."""
+    """Save a screenshot every `n` seconds, until `until_sec` seconds have passed."""
 
     if not until_sec:
         while True:
@@ -372,7 +374,7 @@ def clear_text(element_obj):
 
 def write(text, element=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
-    If no element is specified, simply write into the current page.
+    If no element is specified, send keys to the current page.
     """
 
     @log_action(f"Write {text} into {alias or element} (method: {find_by})")
