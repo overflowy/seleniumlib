@@ -384,7 +384,7 @@ def double_click_by_attr_value(attribute, value, alias=None):
 
 
 def clear_text(element_obj):
-    """Clear text from an element."""
+    """Clear text from an element object."""
 
     element_obj.send_keys(f"{Keys.CONTROL}a")
     element_obj.send_keys(Keys.DELETE)
@@ -400,6 +400,7 @@ def write(text, element=None, find_by=By.ID, alias=None, clear_first=True):
         if element:
             element_obj = get_element_obj(element, find_by)
             if clear_first:
+                # element_obj.clear()  # This doesn't work apparently.
                 clear_text(element_obj)
             element_obj.send_keys(text)
         else:
