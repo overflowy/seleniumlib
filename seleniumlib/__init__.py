@@ -150,6 +150,19 @@ def wait(sec):
     _wait()
 
 
+def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
+    """Wait until the page contains the given text."""
+
+    @log_action(f"Wait until page contains {text}")
+    def _wait_until_page_contains():
+        try:
+            WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
+        except TimeoutException:
+            logger.critical(f"Timeout waiting for page to contain -> {text}")
+
+    _wait_until_page_contains()
+
+
 def get_cookies():
     """Return the cookies."""
 
@@ -424,5 +437,6 @@ __all__ = [
     "source",
     "title",
     "wait",
+    "wait_until_page_contains",
     "write",
 ]
