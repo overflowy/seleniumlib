@@ -199,6 +199,12 @@ def wait_until_element_contains(text, element, find_by=ID, timeout=GLOBAL_TIMEOU
     _wait_until_element_contains()
 
 
+def get_cookie(name):
+    """Return a cookie by name."""
+
+    return browser.get_cookie(name)
+
+
 def get_cookies():
     """Return the cookies."""
 
@@ -486,6 +492,7 @@ __all__ = [
     "double_click",
     "forward",
     "get_alert",
+    "get_cookie",
     "get_cookies",
     "get_element_obj",
     "get_element_text",
@@ -497,8 +504,8 @@ __all__ = [
     "page_contains_text",
     "quit",
     "refresh",
-    "remove_cookies",
     "remove_cookie",
+    "remove_cookies",
     "restore_session",
     "save_screenshot",
     "save_screenshot_every_n_sec",
