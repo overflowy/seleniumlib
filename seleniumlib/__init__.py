@@ -343,10 +343,6 @@ def get_element_text(element, find_by=By.ID):
     return get_element_obj(element, find_by).text
 
 
-def get_element_by_attr_value(attribute, value):
-    """Get an element by attribute value."""
-
-    return get_element_obj(f"//*[@{attribute}='{value}']", find_by=By.XPATH)
 
 
 def click(element, find_by=By.LINK_TEXT, alias=None):
@@ -441,7 +437,6 @@ __all__ = [
     "forward",
     "get_alert",
     "get_cookies",
-    "get_element_by_attr_value",
     "get_element_obj",
     "get_element_text",
     "go",
