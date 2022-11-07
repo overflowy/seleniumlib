@@ -313,7 +313,22 @@ def get_element_obj(element, find_by=By.ID):
     """Get the object of an element."""
 
     try:
-        return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.presence_of_element_located((find_by, element)))
+        match element:
+            case str():
+                return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(
+                    EC.presence_of_element_located((find_by, element))
+                )
+            case (str(), str()):
+                try:
+                    attr, value = element
+                    return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(
+                        EC.presence_of_element_located((By.XPATH, f"//*[@{attr}='{value}']"))
+                    )
+                except ValueError:
+                    TypeError("Invalid element tuple. Must be (attr, value).")
+            case _:
+                raise TypeError("Invalid element type. Must be str or tuple[str, str].")
+
     except TimeoutException:
         logger.critical(f"Element {element} not found (method: {find_by})")
         if SCREENSHOT_ON_EXCEPTION:
