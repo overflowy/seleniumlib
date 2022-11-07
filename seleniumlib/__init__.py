@@ -215,6 +215,26 @@ def add_cookie(cookie):
     _add_cookie()
 
 
+def remove_cookie(name):
+    """Remove a cookie by name."""
+
+    @log_action(f"Remove cookie {name}")
+    def _remove_cookie():
+        browser.delete_cookie(name)
+
+    _remove_cookie()
+
+
+def remove_cookies():
+    """Remove all cookies."""
+
+    @log_action("Remove all cookies")
+    def _remove_all_cookies():
+        browser.delete_all_cookies()
+
+    _remove_all_cookies()
+
+
 def check_session_path():
     """Check if session path is set."""
 
@@ -477,6 +497,8 @@ __all__ = [
     "page_contains_text",
     "quit",
     "refresh",
+    "remove_cookies",
+    "remove_cookie",
     "restore_session",
     "save_screenshot",
     "save_screenshot_every_n_sec",
