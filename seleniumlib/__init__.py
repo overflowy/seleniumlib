@@ -15,6 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from .browser import get_browser
 from .config import get_config
+from .constants import *
 from .logger import get_logging_options, setup_logging
 
 CONFIG = get_config()
@@ -156,7 +157,7 @@ def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
     @log_action(f"Wait until page contains -> {text}")
     def _wait_until_page_contains():
         try:
-            WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
+            WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((TAG_NAME, "body"), text))
         except TimeoutException:
             logger.error(f"Timeout waiting for page to contain -> {text}")
             sys.exit(1)
@@ -164,7 +165,7 @@ def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
     _wait_until_page_contains()
 
 
-def wait_until_element_contains(text, element, find_by=By.ID, timeout=GLOBAL_TIMEOUT_SEC):
+def wait_until_element_contains(text, element, find_by=ID, timeout=GLOBAL_TIMEOUT_SEC):
     """Wait until the element contains the given text."""
 
     @log_action(f"Wait until element {element} contains -> {text}")
@@ -179,7 +180,7 @@ def wait_until_element_contains(text, element, find_by=By.ID, timeout=GLOBAL_TIM
                     try:
                         attr, value = element
                         return WebDriverWait(browser, timeout).until(
-                            EC.text_to_be_present_in_element((By.XPATH, f"//*[@{attr}='{value}']"), text)
+                            EC.text_to_be_present_in_element((XPATH, f"//*[@{attr}='{value}']"), text)
                         )
                     except ValueError:
                         TypeError(f"{repr(element)} <- Invalid element tuple. Must be (attr, value).")
@@ -361,7 +362,7 @@ def dismiss_alert():
     logger.info(f"Alert dismissed -> {alert_text}")
 
 
-def get_element_obj(element, find_by=By.ID):
+def get_element_obj(element, find_by=ID):
     """Get the object of an element."""
 
     try:
@@ -374,7 +375,7 @@ def get_element_obj(element, find_by=By.ID):
                 try:
                     attr, value = element
                     return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(
-                        EC.presence_of_element_located((By.XPATH, f"//*[@{attr}='{value}']"))
+                        EC.presence_of_element_located((XPATH, f"//*[@{attr}='{value}']"))
                     )
                 except ValueError:
                     TypeError(f"{repr(element)} <- Invalid element tuple. Must be (attr, value).")
@@ -391,13 +392,13 @@ def get_element_obj(element, find_by=By.ID):
             sys.exit(1)
 
 
-def get_element_text(element, find_by=By.ID):
+def get_element_text(element, find_by=ID):
     """Get the text of an element."""
 
     return get_element_obj(element, find_by).text
 
 
-def click(element, find_by=By.LINK_TEXT, alias=None):
+def click(element, find_by=LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
     @log_action(f"Click -> {alias or element}")
@@ -407,7 +408,7 @@ def click(element, find_by=By.LINK_TEXT, alias=None):
     _click()
 
 
-def double_click(element, find_by=By.LINK_TEXT, alias=None):
+def double_click(element, find_by=LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
     @log_action(f"Double click -> {alias or element}")
@@ -425,7 +426,7 @@ def clear_text(element_obj):
     element_obj.send_keys(Keys.DELETE)
 
 
-def write(text, into_element=None, find_by=By.ID, alias=None, clear_first=True):
+def write(text, into_element=None, find_by=ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
     If no element is specified, send keys to the current page."""
 
@@ -445,8 +446,15 @@ def write(text, into_element=None, find_by=By.ID, alias=None, clear_first=True):
 
 
 __all__ = [
-    "By",
+    "CLASS_NAME",
+    "CSS_SELECTOR",
+    "ID",
+    "LINK_TEXT",
+    "NAME",
+    "PARTIAL_LINK_TEXT",
     "QUIT_WHEN_DONE",
+    "TAG_NAME",
+    "XPATH",
     "accept_alert",
     "add_cookie",
     "back",
