@@ -228,7 +228,7 @@ def save_screenshot(name=None):
     _save_screenshot()
 
 
-def save_screenshot_every_n_seconds(n_sec, until_sec=0, name=None):
+def save_screenshot_every_n_sec(n_sec, until_sec=0, name=None):
     """Save a screenshot every `n` seconds, until `until_sec` seconds have passed."""
 
     if not until_sec:
@@ -439,7 +439,7 @@ __all__ = [
     "refresh",
     "restore_session",
     "save_screenshot",
-    "save_screenshot_every_n_seconds",
+    "save_screenshot_every_n_sec",
     "save_session",
     "script",
     "source",
