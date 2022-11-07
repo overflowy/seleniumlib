@@ -61,7 +61,7 @@ def setup_logging(log_path, level, log_exceptions, display_stdout, mode):
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
-        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+        logger.error("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     if log_exceptions:
         sys.excepthook = handle_exception

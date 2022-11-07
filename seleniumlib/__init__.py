@@ -112,7 +112,7 @@ def title():
 def go(url):
     """Go to a URL."""
 
-    @log_action(f"Go to {url}")
+    @log_action(f"Go -> {url}")
     def _go():
         browser.get(url)
 
@@ -158,7 +158,8 @@ def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
         try:
             WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
         except TimeoutException:
-            logger.critical(f"Timeout waiting for page to contain -> {text}")
+            logger.error(f"Timeout waiting for page to contain -> {text}")
+            raise TimeoutException(f"Page does not contain text '{text}' after {timeout} seconds.")
 
     _wait_until_page_contains()
 
@@ -198,9 +199,9 @@ def save_session():
     with open(SESSION_PATH, "wb") as f:
         try:
             pickle.dump(cookies, f)
-            logger.info(f"Session saved to {SESSION_PATH}>")
+            logger.info(f"Session saved -> {SESSION_PATH}")
         except FileNotFoundError:
-            logger.critical("Error saving session.")
+            logger.error("Error saving session")
 
 
 @log_action()
@@ -216,9 +217,9 @@ def restore_session():
             for cookie in cookies:
                 add_cookie(cookie)
             refresh()  # Refresh to apply cookies.
-            logger.info(f"Session restored from {SESSION_PATH}")
+            logger.info(f"Session restored -> {SESSION_PATH}")
         except Exception:
-            logger.critical("Error restoring session.")
+            logger.error("Error restoring session")
 
 
 def save_screenshot(name=None):
@@ -293,7 +294,7 @@ def get_alert():
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
     except Exception:  # TODO: Be more specific.
-        logger.critical("Alert not found")
+        logger.error("Alert not found")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
@@ -308,7 +309,7 @@ def accept_alert():
     alert = get_alert()
     alert_text = alert.text
     alert.accept()
-    logger.info(f"Alert accepted: {alert_text}")
+    logger.info(f"Alert accepted -> {alert_text}")
 
 
 @log_action()
@@ -319,7 +320,7 @@ def dismiss_alert():
     alert = get_alert()
     alert_text = alert.text
     alert.dismiss()
-    logger.info(f"Alert dismissed: {alert_text}")
+    logger.info(f"Alert dismissed -> {alert_text}")
 
 
 def get_element_obj(element, find_by=By.ID):
@@ -343,7 +344,7 @@ def get_element_obj(element, find_by=By.ID):
                 raise TypeError("f{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
 
     except TimeoutException:
-        logger.critical(f"{element} <- Element not found.")
+        (f"{element} <- Element not found")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
@@ -359,7 +360,7 @@ def get_element_text(element, find_by=By.ID):
 def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    @log_action(f"Click {alias or element} (method: {find_by})")
+    @log_action(f"Click -> {alias or element}")
     def _click():
         get_element_obj(element, find_by).click()
 
@@ -369,7 +370,7 @@ def click(element, find_by=By.LINK_TEXT, alias=None):
 def double_click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    @log_action(f"Double click {alias or element} (method: {find_by})")
+    @log_action(f"Double click -> {alias or element}")
     def _double_click():
         element_obj = get_element_obj(element, find_by)
         ActionChains(browser).double_click(element_obj).perform()
@@ -388,7 +389,7 @@ def write(text, into_element=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
     If no element is specified, send keys to the current page."""
 
-    @log_action(f"Write {text} into {alias or into_element} (method: {find_by})")
+    @log_action(f"Write {text} -> {alias or into_element}")
     def _write():
         if into_element:
             element_obj = get_element_obj(into_element, find_by)
