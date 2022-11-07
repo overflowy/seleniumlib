@@ -41,9 +41,9 @@ def log_action(message=None):
             toc = time.perf_counter()
             elapsed_time = toc - tic
             if message:
-                logger.info(f"{func.__name__}::{message}::{elapsed_time:0.5f} seconds")
+                logger.info(f"{func.__name__}::{message} => {elapsed_time:0.5f} seconds")
             else:
-                logger.info(f"{func.__name__}::{elapsed_time:0.5f} seconds")
+                logger.info(f"{func.__name__} => {elapsed_time:0.5f} seconds")
             return value
 
         return wrapped
@@ -159,7 +159,7 @@ def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
             WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
         except TimeoutException:
             logger.error(f"Timeout waiting for page to contain -> {text}")
-            raise TimeoutException(f"Page does not contain text '{text}' after {timeout} seconds.")
+            sys.exit(1)
 
     _wait_until_page_contains()
 
@@ -200,8 +200,9 @@ def save_session():
         try:
             pickle.dump(cookies, f)
             logger.info(f"Session saved -> {SESSION_PATH}")
-        except FileNotFoundError:
-            logger.error("Error saving session")
+        except Exception as e:
+            logger.error(f"Error saving session -> {e}")
+            sys.exit(1)
 
 
 @log_action()
@@ -218,8 +219,9 @@ def restore_session():
                 add_cookie(cookie)
             refresh()  # Refresh to apply cookies.
             logger.info(f"Session restored -> {SESSION_PATH}")
-        except Exception:
-            logger.error("Error restoring session")
+        except Exception as e:
+            logger.error(f"Error restoring session -> {e}")
+            sys.exit(1)
 
 
 def save_screenshot(name=None):
@@ -293,12 +295,14 @@ def get_alert():
 
     try:
         return WebDriverWait(browser, GLOBAL_TIMEOUT_SEC).until(EC.alert_is_present())
-    except Exception:  # TODO: Be more specific.
-        logger.error("Alert not found")
+    except Exception as e:
+        logger.error(f"Alert not found -> {e}")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
             breakpoint()
+        else:
+            sys.exit(1)
 
 
 @log_action()
@@ -344,11 +348,13 @@ def get_element_obj(element, find_by=By.ID):
                 raise TypeError("f{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
 
     except TimeoutException:
-        (f"{element} <- Element not found")
+        logger.error(f"Element not found -> {element}")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
             breakpoint()
+        else:
+            sys.exit(1)
 
 
 def get_element_text(element, find_by=By.ID):
