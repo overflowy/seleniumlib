@@ -371,15 +371,15 @@ def clear_text(element_obj):
     element_obj.send_keys(Keys.DELETE)
 
 
-def write(text, element=None, find_by=By.ID, alias=None, clear_first=True):
+def write(text, into_element=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
     If no element is specified, send keys to the current page.
     """
 
-    @log_action(f"Write {text} into {alias or element} (method: {find_by})")
+    @log_action(f"Write {text} into {alias or into_element} (method: {find_by})")
     def _write():
-        if element:
-            element_obj = get_element_obj(element, find_by)
+        if into_element:
+            element_obj = get_element_obj(into_element, find_by)
             if clear_first:
                 # element_obj.clear()  # This doesn't work apparently.
                 clear_text(element_obj)
