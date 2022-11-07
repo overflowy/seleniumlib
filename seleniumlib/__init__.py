@@ -183,7 +183,7 @@ def check_session_path():
     """Check if session path is set."""
 
     if not SESSION_PATH:
-        raise ValueError("Session path is not set.")
+        raise ValueError("session_path <- Value not set in config file.")
 
 
 @log_action()
@@ -225,7 +225,7 @@ def save_screenshot(name=None):
     """Save a screenshot of the current page."""
 
     if not (screenshots_path := CONFIG["Browser"].get("screenshots_path")):
-        raise ValueError("Screenshots path not set in config.")
+        raise ValueError("screenshots_path <- Value not set in config file.")
     if not Path(screenshots_path).exists():
         Path(screenshots_path).mkdir(parents=True)
 
@@ -250,7 +250,7 @@ def save_screenshot_every_n_sec(n_sec, until_sec=0, name=None):
             time.sleep(n_sec)
     else:
         if until_sec <= n_sec:
-            raise ValueError("until must be greater than n_sec.")
+            raise ValueError("until_sec <- Must be greater than n_sec.")
 
         seconds_passed = 0
         while seconds_passed < until_sec:
@@ -338,12 +338,12 @@ def get_element_obj(element, find_by=By.ID):
                         EC.presence_of_element_located((By.XPATH, f"//*[@{attr}='{value}']"))
                     )
                 except ValueError:
-                    TypeError("Invalid element tuple. Must be (attr, value).")
+                    TypeError(f"{repr(element)} <- Invalid element tuple. Must be (attr, value).")
             case _:
-                raise TypeError("Invalid element type. Must be str or tuple[str, str].")
+                raise TypeError("f{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
 
     except TimeoutException:
-        logger.critical(f"Element {element} not found (method: {find_by})")
+        logger.critical(f"{element} <- Element not found.")
         if SCREENSHOT_ON_EXCEPTION:
             save_screenshot()
         if DEBUG_ON_EXCEPTION:
@@ -386,8 +386,7 @@ def clear_text(element_obj):
 
 def write(text, into_element=None, find_by=By.ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
-    If no element is specified, send keys to the current page.
-    """
+    If no element is specified, send keys to the current page."""
 
     @log_action(f"Write {text} into {alias or into_element} (method: {find_by})")
     def _write():

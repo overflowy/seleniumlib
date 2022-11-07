@@ -11,7 +11,9 @@ def get_browser(browser_config):
     chrome_options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
     if page_load_strategy := browser_config.get("page_load_strategy", "normal"):
         if page_load_strategy.lower() not in ["normal", "eager", "none"]:
-            raise ValueError("Invalid page load strategy. Must be one of: NORMAL, EAGER, NONE.")
+            raise ValueError(
+                f"{page_load_strategy} <- Invalid page load strategy. Must be one of: NORMAL, EAGER, NONE."
+            )
         desired_caps = DesiredCapabilities.CHROME
         desired_caps["pageLoadStrategy"] = page_load_strategy.lower()
         return webdriver.Chrome(
@@ -24,7 +26,7 @@ def parse_browser_options(chrome_options, browser_config):
     """Parse browser options from config file."""
 
     if not (chrome_executable_path := browser_config.get("chromium_executable_path")):
-        raise ValueError("chrome_executable_path must be set in config file.")
+        raise ValueError("chrome_executable_path <- Value not set in config file.")
     chrome_options.binary_location = chrome_executable_path
 
     prefs = {
