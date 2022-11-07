@@ -343,33 +343,14 @@ def get_element_text(element, find_by=By.ID):
     return get_element_obj(element, find_by).text
 
 
-
-
 def click(element, find_by=By.LINK_TEXT, alias=None):
     """Wait for an element to be available and click it."""
 
-    match element:
-        case str():
+    @log_action(f"Click {alias or element} (method: {find_by})")
+    def _click():
+        get_element_obj(element, find_by).click()
 
-            @log_action(f"Click {alias or element} (method: {find_by})")
-            def _click():
-                get_element_obj(element, find_by).click()
-
-            _click()
-
-        case dict():
-            try:
-                attr, value = element.popitem()
-            except Exception:
-                raise ValueError("`element` must be a dict with one attribute and value pair.")
-
-            @log_action(f"Click {attr}={value} {alias or ''}")
-            def _click_by_attr_value():
-                """Click an element by attribute value."""
-
-                get_element_by_attr_value(attr, value).click()
-
-            _click_by_attr_value()
+    _click()
 
 
 def double_click(element, find_by=By.LINK_TEXT, alias=None):
