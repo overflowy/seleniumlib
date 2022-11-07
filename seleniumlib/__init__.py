@@ -153,7 +153,7 @@ def wait(sec):
 def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
     """Wait until the page contains the given text."""
 
-    @log_action(f"Wait until page contains {text}")
+    @log_action(f"Wait until page contains -> {text}")
     def _wait_until_page_contains():
         try:
             WebDriverWait(browser, timeout).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
@@ -162,6 +162,40 @@ def wait_until_page_contains(text, timeout=GLOBAL_TIMEOUT_SEC):
             sys.exit(1)
 
     _wait_until_page_contains()
+
+
+def wait_until_element_contains(text, element, find_by=By.ID, timeout=GLOBAL_TIMEOUT_SEC):
+    """Wait until the element contains the given text."""
+
+    @log_action(f"Wait until element {element} contains -> {text}")
+    def _wait_until_element_contains():
+        try:
+            match element:
+                case str():
+                    return WebDriverWait(browser, timeout).until(
+                        EC.text_to_be_present_in_element((element, find_by), text)
+                    )
+                case (str(), str()):
+                    try:
+                        attr, value = element
+                        return WebDriverWait(browser, timeout).until(
+                            EC.text_to_be_present_in_element((By.XPATH, f"//*[@{attr}='{value}']"), text)
+                        )
+                    except ValueError:
+                        TypeError(f"{repr(element)} <- Invalid element tuple. Must be (attr, value).")
+                case _:
+                    raise TypeError("f{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
+
+        except TimeoutException:
+            logger.error(f"Timeout waiting for element {element} to contain -> {text}")
+            if SCREENSHOT_ON_EXCEPTION:
+                save_screenshot()
+            if DEBUG_ON_EXCEPTION:
+                breakpoint()
+            else:
+                sys.exit(1)
+
+    _wait_until_element_contains()
 
 
 def get_cookies():
@@ -443,6 +477,7 @@ __all__ = [
     "source",
     "title",
     "wait",
+    "wait_until_element_contains",
     "wait_until_page_contains",
     "write",
 ]
