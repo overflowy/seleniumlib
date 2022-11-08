@@ -143,7 +143,7 @@ def forward():
 def wait(sec):
     """Wait for a number of seconds."""
 
-    @log_action(f"Wait for {sec} seconds")
+    @log_action(f"Wait -> {sec} seconds")
     def _wait():
         time.sleep(sec)
 
@@ -184,7 +184,7 @@ def wait_until_element_contains(text, element, find_by=ID, timeout=GLOBAL_TIMEOU
                     except ValueError:
                         TypeError(f"{repr(element)} <- Invalid element tuple. Must be (attr, value).")
                 case _:
-                    raise TypeError("f{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
+                    raise TypeError(f"{repr(element)} <- Invalid element type. Must be str or tuple[str, str].")
 
         except TimeoutException:
             logger.error(f"Timeout waiting for element {element} to contain -> {text}")
@@ -213,7 +213,7 @@ def get_cookies():
 def add_cookie(cookie):
     """Add a cookie: `{name: value}`."""
 
-    @log_action(f"Add cookie {cookie}")
+    @log_action(f"Add cookie -> {cookie}")
     def _add_cookie():
         browser.add_cookie(cookie)
 
@@ -223,7 +223,7 @@ def add_cookie(cookie):
 def remove_cookie(name):
     """Remove a cookie by name."""
 
-    @log_action(f"Remove cookie {name}")
+    @log_action(f"Remove cookie -> {name}")
     def _remove_cookie():
         browser.delete_cookie(name)
 
@@ -259,7 +259,7 @@ def save_session():
     with open(SESSION_PATH, "wb") as f:
         try:
             pickle.dump(cookies, f)
-            logger.info(f"Session saved -> {SESSION_PATH}")
+            logger.info(f"Save session -> {SESSION_PATH}")
         except Exception as e:
             logger.error(f"Error saving session -> {e}")
             sys.exit(1)
@@ -278,7 +278,7 @@ def restore_session():
             for cookie in cookies:
                 add_cookie(cookie)
             refresh()  # Refresh to apply cookies.
-            logger.info(f"Session restored -> {SESSION_PATH}")
+            logger.info(f"Restore session -> {SESSION_PATH}")
         except Exception as e:
             logger.error(f"Error restoring session -> {e}")
             sys.exit(1)
@@ -297,7 +297,7 @@ def save_screenshot(name=None):
     else:
         filename = str(Path(screenshots_path) / Path(f"screenshot_{time.time()}.png"))
 
-    @log_action(f"Save screenshot to {filename}")
+    @log_action(f"Save screenshot -> {filename}")
     def _save_screenshot():
         browser.save_screenshot(filename)
 
@@ -343,7 +343,7 @@ def page_contains_text(text):
 def script(script):
     """Execute a script."""
 
-    @log_action(f"Execute script {script}")
+    @log_action(f"Execute script -> {script}")
     def _script():
         browser.execute_script(script)
 
@@ -373,7 +373,7 @@ def accept_alert():
     alert = get_alert()
     alert_text = alert.text
     alert.accept()
-    logger.info(f"Alert accepted -> {alert_text}")
+    logger.info(f"Accept alert -> {alert_text}")
 
 
 @log_action()
@@ -384,7 +384,7 @@ def dismiss_alert():
     alert = get_alert()
     alert_text = alert.text
     alert.dismiss()
-    logger.info(f"Alert dismissed -> {alert_text}")
+    logger.info(f"Dissmis alert -> {alert_text}")
 
 
 def get_element_obj(element, find_by=ID):
@@ -455,7 +455,7 @@ def write(text, into_element=None, find_by=ID, alias=None, clear_first=True):
     """Wait for an element to be available and write into it.
     If no element is specified, send keys to the current page."""
 
-    @log_action(f"Write {text} -> {alias or into_element}")
+    @log_action(f"Write -> {text} -> {alias or into_element}")
     def _write():
         if into_element:
             element_obj = get_element_obj(into_element, find_by)
