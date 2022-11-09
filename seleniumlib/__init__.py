@@ -434,7 +434,7 @@ def click(element, find_by=LINK_TEXT, alias=None):
 
 
 def double_click(element, find_by=LINK_TEXT, alias=None):
-    """Wait for an element to be available and click it."""
+    """Wait for an element to be available and double click it."""
 
     @log_action(f"Double click -> {alias or element}")
     def _double_click():
