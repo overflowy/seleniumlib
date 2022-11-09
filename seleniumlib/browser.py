@@ -1,25 +1,21 @@
 import os
+from typing import Any
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def get_browser(browser_config):
+def get_browser(browser_config: dict[str, str | int | bool]) -> Any:
     """Returns a browser instance based on the config file."""
 
     chrome_options = parse_browser_options(webdriver.ChromeOptions(), browser_config)
-    if page_load_strategy := browser_config.get("page_load_strategy", "normal"):
-        if page_load_strategy.lower() not in ["normal", "eager", "none"]:
-            raise ValueError(
-                f"{page_load_strategy} <- Invalid page load strategy. Must be one of: NORMAL, EAGER, NONE."
-            )
-        desired_caps = DesiredCapabilities.CHROME
-        desired_caps["pageLoadStrategy"] = page_load_strategy.lower()
-        return webdriver.Chrome(
-            ChromeDriverManager().install(), options=chrome_options, desired_capabilities=desired_caps
-        )
-    return webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    page_load_strategy = browser_config.get("page_load_strategy", "normal")
+    if not isinstance(page_load_strategy, str) or page_load_strategy.lower() not in ["normal", "eager", "none"]:
+        raise ValueError(f"{page_load_strategy} <- Invalid page load strategy. Must be one of: NORMAL, EAGER, NONE.")
+    desired_caps: dict[str, str] = DesiredCapabilities.CHROME
+    desired_caps["pageLoadStrategy"] = page_load_strategy.lower()
+    return webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options, desired_capabilities=desired_caps)
 
 
 def parse_browser_options(chrome_options, browser_config):
@@ -29,7 +25,7 @@ def parse_browser_options(chrome_options, browser_config):
         raise ValueError("chrome_executable_path <- Value not set in config file.")
     chrome_options.binary_location = chrome_executable_path
 
-    prefs = {
+    prefs: dict[str, Any] = {
         "safebrowsing.enabled": "false",
         "profile.exit_type": "Normal",
     }
